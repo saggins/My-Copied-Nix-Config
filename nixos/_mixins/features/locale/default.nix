@@ -1,8 +1,8 @@
 { config, hostname, lib, ... }:
 let
-  locale = "en_GB.UTF-8";
-  consoleKeymap = "uk";
-  xkbLayout = "gb";
+  locale = "en_US.UTF-8";
+  consoleKeymap = "us";
+  xkbLayout = "us";
 in
 {
   console = lib.mkIf (config.console.font != null) {

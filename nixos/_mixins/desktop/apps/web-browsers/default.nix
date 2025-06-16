@@ -6,8 +6,8 @@
   ...
 }:
 let
-  forFamily = [ "agatha" "louise" ];
-  forMartin = [ "martin" ];
+  forFamily = [  ];
+  forMartin = [ "sangmin" ];
 in
 {
   imports = lib.optional (builtins.pathExists (./. + "/${username}.nix")) ./${username}.nix;
@@ -67,7 +67,6 @@ in
         "ShowFullUrlsInAddressBar" = true;
         "SpellcheckEnabled" = true;
         "SpellcheckLanguage" = [
-          "en-GB"
           "en-US"
         ];
         # Cloud Reporting
@@ -110,7 +109,6 @@ in
     firefox = {
       enable = true;
       languagePacks = [
-        "en-GB"
         "en-US"
       ];
       package = pkgs.firefox;
@@ -175,12 +173,12 @@ in
           "Locked" = true;
         };
         # Check about:support for extension/add-on ID strings.
-        ExtensionSettings = {
-          "support@lastpass.com" = {
-            install_url = "https://addons.mozilla.org/firefox/downloads/latest/lastpass-password-manager/latest.xpi";
-            installation_mode = "force_installed";
-          };
-        };
+       #ExtensionSettings = {
+       #  "support@lastpass.com" = {
+       #    install_url = "https://addons.mozilla.org/firefox/downloads/latest/lastpass-password-manager/latest.xpi";
+       #    installation_mode = "force_installed";
+       #  };
+       #};
         "ExtensionUpdate" = true;
         "FirefoxHome" = {
           "Search" = true;

@@ -1,4 +1,19 @@
 _: {
+  blackchungus = {
+    monitor = [
+      "HDMI-A-1, 3840x2160@60Hz, auto, 1"
+    ];
+    workspace = [
+      "1, name:Web, persistent:true, monitor:HDMI-A-1"
+      "2, name:Work, persistent:true, monitor:HDMI-A-1"
+      "3, name:Chat, persistent:true, monitor:HDMI-A-1"
+      "4, name:Code, persistent:true, monitor:HDMI-A-1"
+      "5, name:Term, persistent:true, monitor:HDMI-A-1"
+      "6, name:Note, persistent:true, monitor:HDMI-A-1"
+      "7, name:Cast, persistent:true, monitor:HDMI-A-1"
+      "8, name:Fun, persistent:true, monitor:HDMI-A-1"
+    ];
+  };
   phasma = {
     monitor = [
       "DP-1, 3440x1440@100Hz, 0x1280, 1"

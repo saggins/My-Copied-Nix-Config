@@ -32,6 +32,10 @@
       policies = {
         # Check about:support for extension/add-on ID strings.
         ExtensionSettings = {
+          "zotero@chnm.gmu.edu" = {
+            install_url = "https://www.zotero.org/download/connector/dl?browser=firefox";
+            installation_mode = "force_installed";
+          };
           "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi";
             installation_mode = "force_installed";
@@ -80,6 +84,7 @@
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/styl-us/latest.xpi";
             installation_mode = "force_installed";
           };
+          
         };
         "Homepage" = {
           "URL" = "https://kagi.com";

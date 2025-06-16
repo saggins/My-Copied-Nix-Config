@@ -63,6 +63,12 @@
           username = "nixos";
           desktop = "pantheon";
         };
+	#saggins
+	"sangmin@blackchungus" = helper.mkHome {
+	  hostname = "blackchungus";
+	  username= "sangmin";
+	  desktop = "hyprland";
+	};
         # Workstations
         "martin@phasma" = helper.mkHome {
           hostname = "phasma";
@@ -140,6 +146,11 @@
         #  - sudo nixos-rebuild switch --flake $HOME/Zero/nix-config
         #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
         #  - nix run github:nix-community/nixos-anywhere -- --flake '.#{hostname}' root@{ip-address}
+	blackchungus = helper.mkNixos {
+	  hostname="blackchungus";
+	  desktop="hyprland";
+	  username="sangmin";
+	};
         phasma = helper.mkNixos {
           hostname = "phasma";
           desktop = "hyprland";

@@ -10,8 +10,9 @@ let
   installFor = [ "sangmin" ];
 in
 lib.mkIf (lib.elem "${username}" installFor) {
-  services.open-webui = {
-    enable=true;
-    port=8123;
+  environment.systemPackages = [ pkgs.rustdesk];
+  services.rustdesk-server = {
+    enable = true;
+    openFirewall = true;
   };
 }

@@ -67,6 +67,7 @@ in
     packages =
       with pkgs;
       [
+        vim
         asciicam # Terminal webcam
         bc # Terminal calculator
         bandwhich # Modern Unix `iftop`
@@ -147,15 +148,15 @@ in
         nh
         uutils-coreutils-noprefix
       ];
-    sessionVariables = {
-      EDITOR = "micro";
+    sessionVariables = { # i don't like micro sorry
+      EDITOR = "vim";
       MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
       MANROFFOPT = "-c";
       MICRO_TRUECOLOR = "1";
       PAGER = "bat";
-      SUDO_EDITOR = "micro";
-      SYSTEMD_EDITOR = "micro";
-      VISUAL = "micro";
+      SUDO_EDITOR = "vim";
+      SYSTEMD_EDITOR = "vim";
+      VISUAL = "vim";
     };
   };
 
@@ -184,24 +185,6 @@ in
 
   programs = {
     aria2.enable = true;
-    atuin = {
-      enable = true;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
-      enableZshIntegration = true;
-      flags = [ "--disable-up-arrow" ];
-      package = pkgs.atuin;
-      settings = {
-        auto_sync = true;
-        dialect = "uk";
-        key_path = config.sops.secrets.atuin_key.path;
-        show_preview = true;
-        style = "compact";
-        sync_frequency = "1h";
-        sync_address = "https://api.atuin.sh";
-        update_check = false;
-      };
-    };
     bat = {
       enable = true;
       extraPackages = with pkgs.bat-extras; [
@@ -451,7 +434,7 @@ in
         };
         username = {
           aliases = {
-            "martin" = "󰝴";
+            "sangmin" = "󰝴";
             "root" = "󰱯";
           };
           format = "[ $user]($style)";
@@ -783,20 +766,8 @@ in
     };
     defaultSopsFile = ../secrets/secrets.yaml;
     secrets = {
-      asciinema.path = "${config.home.homeDirectory}/.config/asciinema/config";
-      atuin_key.path = "${config.home.homeDirectory}/.local/share/atuin/key";
-      gpg_private = { };
-      gpg_public = { };
-      gpg_ownertrust = { };
-      hueadm.path = "${config.home.homeDirectory}/.hueadm.json";
-      obs_secrets = { };
-      ssh_config.path = "${config.home.homeDirectory}/.ssh/config";
-      ssh_key.path = "${config.home.homeDirectory}/.ssh/id_rsa";
-      ssh_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa.pub";
-      ssh_semaphore_key.path = "${config.home.homeDirectory}/.ssh/id_rsa_semaphore";
-      ssh_semaphore_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa_semaphore.pub";
-      transifex.path = "${config.home.homeDirectory}/.transifexrc";
-    };
+
+       };
   };
 
   # Nicely reload system units when changing configs

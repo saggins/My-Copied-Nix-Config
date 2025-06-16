@@ -168,51 +168,6 @@
     };
     defaultSopsFile = ../secrets/secrets.yaml;
     secrets = {
-      test-key = { };
-      ssh_key = {
-        mode = "0600";
-        path = "/root/.ssh/id_rsa";
-      };
-      ssh_pub = {
-        mode = "0644";
-        path = "/root/.ssh/id_rsa.pub";
-      };
-      # Use `make-host-keys` to enroll new host keys.
-      initrd_ssh_host_ed25519_key = {
-        mode = "0600";
-        path = "/etc/ssh/initrd_ssh_host_ed25519_key";
-        sopsFile = ../secrets/initrd.yaml;
-      };
-      initrd_ssh_host_ed25519_key_pub = {
-        mode = "0644";
-        path = "/etc/ssh/initrd_ssh_host_ed25519_key.pub";
-        sopsFile = ../secrets/initrd.yaml;
-      };
-      ssh_host_ed25519_key = {
-        mode = "0600";
-        path = "/etc/ssh/ssh_host_ed25519_key";
-        sopsFile = ../secrets/${hostname}.yaml;
-      };
-      ssh_host_ed25519_key_pub = {
-        mode = "0644";
-        path = "/etc/ssh/ssh_host_ed25519_key.pub";
-        sopsFile = ../secrets/${hostname}.yaml;
-      };
-      ssh_host_rsa_key = {
-        mode = "0600";
-        path = "/etc/ssh/ssh_host_rsa_key";
-        sopsFile = ../secrets/${hostname}.yaml;
-      };
-      ssh_host_rsa_key_pub = {
-        mode = "0644";
-        path = "/etc/ssh/ssh_host_rsa_key.pub";
-        sopsFile = ../secrets/${hostname}.yaml;
-      };
-      malak_enc.sopsFile = ../secrets/disks.yaml;
-      tanis_enc.sopsFile = ../secrets/disks.yaml;
-      shaa_enc.sopsFile = ../secrets/disks.yaml;
-      atrius_enc.sopsFile = ../secrets/disks.yaml;
-      sidious_enc.sopsFile = ../secrets/disks.yaml;
     };
   };
 

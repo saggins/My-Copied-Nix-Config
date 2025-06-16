@@ -9,7 +9,7 @@
   mkHome =
     {
       hostname,
-      username ? "martin",
+      username ? "sangmin",
       desktop ? null,
       platform ? "x86_64-linux",
     }:
@@ -45,7 +45,7 @@
   mkNixos =
     {
       hostname,
-      username ? "martin",
+      username ? "sangmin",
       desktop ? null,
       platform ? "x86_64-linux",
     }:
@@ -89,7 +89,7 @@
     {
       desktop ? "aqua",
       hostname,
-      username ? "martin",
+      username ? "sangmin",
       platform ? "aarch64-darwin",
     }:
     let

@@ -6,7 +6,7 @@ let
     "--margin-left 540 --margin-right 540"
   else
     "";
-  outputDisplay = if (hostname == "vader" || hostname == "phasma") then "DP-1" else "eDP-1";
+  outputDisplay = "HDMI-A-1";
   hwmonPath = if (hostname == "vader" || hostname == "phasma") then "/sys/class/hwmon/hwmon4/temp1_input"
     else if hostname == "tanis" then "/sys/class/hwmon/hwmon3/temp1_input"
     else "/sys/class/hwmon/hwmon0/temp1_input";

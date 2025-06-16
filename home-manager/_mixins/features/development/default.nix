@@ -30,10 +30,12 @@
         onefetch # fetch git project info
         quilt # patch manager
         tokei # Modern Unix `wc` for code
+        #inshellisense #eww microsoft: intellisense for shell
       ];
   };
 
   programs = {
+    #fish.interactiveShellInit = "is"; # setup inshellisense see https://github.com/microsoft/inshellisense#Usage
     gh = {
       enable = true;
       # TODO: Package https://github.com/DevAtDawn/gh-fish
@@ -44,7 +46,7 @@
         gh-notify
       ];
       settings = {
-        editor = "micro";
+        editor = "vim";
         git_protocol = "ssh";
         prompt = "enabled";
       };
@@ -101,17 +103,6 @@
     };
     gitui = {
       enable = true;
-    };
-  };
-  # https://dl.thalheim.io/
-  sops = {
-    secrets = {
-      act-env = {
-        path = "${config.home.homeDirectory}/.config/act/secrets";
-        sopsFile = ../../../../secrets/act.yaml;
-        mode = "0660";
-      };
-      gh_token = { };
     };
   };
 }

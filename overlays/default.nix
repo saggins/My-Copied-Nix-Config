@@ -7,7 +7,34 @@
   # This one contains whatever you want to overlay
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
-  modifications = _final: prev: {
+  modifications = final: prev: {
+    
+    # Remote Desktop feature not merged
+    # https://github.com/hyprwm/xdg-desktop-portal-hyprland/issues/252 
+    # https://github.com/hyprwm/xdg-desktop-portal-hyprland/pull/308 (Implement remote desktop portal)
+#   hyprland-protocols = prev.hyprland-protocols.overrideAttrs (old: rec {
+#         pname = "hyprland-protocols";
+#         version = "0.6.4-unstable-2025-06-11";
+#         src = prev.fetchFromGitHub {
+#           owner = "hyprwm";
+#           repo = "hyprland-protocols";
+#           rev = "5433c38e9755e83905376ed0faf5c624869e24b9";
+#           hash = "sha256-mnejydAjW+DW5aVbUig6nSBUh5DTMYZXZylMGKc1enk=";
+#         };
+#   });
+#
+#   xdg-desktop-portal-hyprland = prev.xdg-desktop-portal-hyprland.overrideAttrs (old: rec {
+#     pname = "xdg-desktop-portal-hyprland";
+#     version = "1.3-unstable-2025-06-11";
+#     src = prev.fetchFromGitHub {
+#       owner = "hyprwm";
+#       repo = "xdg-desktop-portal-hyprland";
+#       rev = "2cb4db60a29a5622c5f4d042de7179268f7e9fc0";
+#       sha256 = "sha256-JslocIQeVBri0vMQNQV4ZfW5phnvIgyDPc90kPnNG00=";
+#     };
+#     buildInputs = old.buildInputs ++ [ final.pkgs.hyprland-protocols  prev.pkgs.libei];
+#   });
+#
     # Override avizo to use a specific commit that includes these fixes:
     # - https://github.com/heyjuvi/avizo/pull/76 (fix options of lightctl)
     # - https://github.com/heyjuvi/avizo/pull/73 (chore: fix size of dark theme icons)
@@ -23,6 +50,7 @@
     });
 
     gitkraken = prev.gitkraken.overrideAttrs (old: rec {
+      buildInputs = prev.buildInputs ++ [prev.pkgs.libei];
       version = "11.1.1";
 
       src = {

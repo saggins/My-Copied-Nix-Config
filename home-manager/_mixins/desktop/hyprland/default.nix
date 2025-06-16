@@ -7,7 +7,7 @@
   ...
 }:
 let
-  xkbLayout = "gb";
+  xkbLayout = "us";
   monitors = (import ./monitors.nix { }).${hostname};
 in
 {
