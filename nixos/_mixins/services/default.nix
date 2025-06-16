@@ -1,4 +1,4 @@
 { lib, ... }:
 {
-  imports = [./ollama];
+  imports = [./ollama ./calendar];
 }
