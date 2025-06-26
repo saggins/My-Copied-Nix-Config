@@ -1,4 +1,4 @@
 { lib, ... }:
 {
-  imports = [./ollama ./calendar];
+  imports = [./ollama ./calendar ./nix-serve ./ssh ./tailscale ./unifi];
 }
