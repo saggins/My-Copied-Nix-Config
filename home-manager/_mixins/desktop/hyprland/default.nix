@@ -241,7 +241,10 @@ in
         "opacity 1.0, class: Gimp"
         "opacity 1.0, class: love"
         "opacity 1.0, title: ^QEMU"
+        "opacity 1.0, class: Safeeyes"
 
+        # make safeeyes full screen
+        "fullscreen, class:(Safeeyes)"
 
         # make pop-up file dialogs floating, centred, and pinned
         "float, title:(Open|Progress|Save File)"
