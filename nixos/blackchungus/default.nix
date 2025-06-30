@@ -77,4 +77,7 @@
   services.xserver.videoDrivers = [
     "amdgpu"
   ];
+
+
+  nix.settings.trusted-users = ["sangmin"];
 }
