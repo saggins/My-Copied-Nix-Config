@@ -285,8 +285,8 @@ in
         weather = "${lib.getExe pkgs.girouette} --quiet";
         weather-home = "${lib.getExe pkgs.girouette} --quiet --location Basingstoke";
         where-am-i = "${pkgs.geoclue2}/libexec/geoclue-2.0/demos/where-am-i";
-        lock-armstrong = "fusermount -u ~/Vaults/Armstrong";
-        unlock-armstrong = "${pkgs.gocryptfs}/bin/gocryptfs ~/Crypt/Armstrong ~/Vaults/Armstrong";
+        lock-homeworkfolder = "fusermount -u ~/Vaults/HomeworkFolder";
+        unlock-homeworkfolder = "${pkgs.gocryptfs}/bin/gocryptfs ~/Crypt/HomeworkFolder ~/Vaults/HomeworkFolder";
         lock-secrets = "fusermount -u ~/Vaults/Secrets";
         unlock-secrets = "${pkgs.gocryptfs}/bin/gocryptfs ~/Crypt/Secrets ~/Vaults/Secrets";
       };
