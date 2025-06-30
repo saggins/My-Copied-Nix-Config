@@ -34,7 +34,25 @@
 #     };
 #     buildInputs = old.buildInputs ++ [ final.pkgs.hyprland-protocols  prev.pkgs.libei];
 #   });
-#
+
+   #https://github.com/mpobaschnig/vaults/issues/164
+   # Ovveride Vaults b/c it's broken 
+   vaults = prev.vaults.overrideAttrs (old: rec {
+     pname = "vaults";
+     version = "0.8.0-2025-06-19";
+     src = prev.fetchFromGitHub {
+       owner = "mpobaschnig";
+       repo = "vaults";
+       rev = "v0.8.0";
+       sha256 = "sha256-USVP/7TNdpUNx1kDsCReGYIP8gHUeij2dqy8TR4R+CE=";
+     };
+     patches=[];
+     cargoDeps = prev.rustPlatform.fetchCargoVendor {
+      inherit src;
+      name = "vaults-0.8.0";
+      hash = "sha256-93X2BCn6Ih2DqYJNvYvUCYrC1E6wpCT5X8Hyux/8mno=";
+    };
+   });
     # Override avizo to use a specific commit that includes these fixes:
     # - https://github.com/heyjuvi/avizo/pull/76 (fix options of lightctl)
     # - https://github.com/heyjuvi/avizo/pull/73 (chore: fix size of dark theme icons)
