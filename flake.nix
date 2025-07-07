@@ -69,6 +69,13 @@
 	  username= "sangmin";
 	  desktop = "hyprland";
 	};
+
+	#saggins
+	"sangmin@workhorse" = helper.mkHome {
+	  hostname = "workhorse";
+	  username= "sangmin";
+	  desktop = "hyprland";
+	};
         # Workstations
         "martin@phasma" = helper.mkHome {
           hostname = "phasma";
