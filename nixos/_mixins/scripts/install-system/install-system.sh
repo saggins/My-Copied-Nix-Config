@@ -5,7 +5,7 @@ set +u  # Disable nounset
 set +o pipefail  # Disable pipefail
 
 TARGET_HOST="${1:-}"
-TARGET_USER="${2:-martin}"
+TARGET_USER="${2:-sangmin}"
 TARGET_BRANCH="${3:-main}"
 
 function run_disko() {
@@ -44,7 +44,7 @@ if [ "$(id -u)" -eq 0 ]; then
 fi
 
 if [ ! -d "$HOME/Zero/nix-config/.git" ]; then
-    git clone https://github.com/wimpysworld/nix-config.git "$HOME/Zero/nix-config"
+    git clone https://github.com/saggins/My-Copied-Nix-Config.git "$HOME/Zero/nix-config"
 fi
 
 pushd "$HOME/Zero/nix-config"
@@ -145,7 +145,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/Zero/"
     if [ "$TARGET_HOST" != "crawler" ] && [ "$TARGET_HOST" != "dagger" ]; then
         pushd "/mnt/home/$TARGET_USER/Zero/nix-config"
-        git remote set-url origin git@github.com:wimpysworld/nix-config.git
+        git remote set-url origin git@github.com:saggins/My-Copied-Nix-Config.git
         popd
     fi
 
