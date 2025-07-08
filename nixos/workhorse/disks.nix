@@ -3,7 +3,7 @@ _: {
     disk = {
       mydisk = {
         type = "disk";
-        device = "/dev/disk/by-id/ata-KINGSTON_SA400S37240G_50026B767438A3F8";
+        device = "/dev/disk/by-id/ata-KINGSTON_SA400S37240G_50026B768438A3F8";
         content = {
           type = "gpt";
           partitions = {
