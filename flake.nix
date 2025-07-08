@@ -158,6 +158,11 @@
 	  desktop="hyprland";
 	  username="sangmin";
 	};
+	workhorse = helper.mkNixos {
+	  hostname="workhorse";
+	  desktop="hyprland";
+	  username="sangmin";
+	};
         phasma = helper.mkNixos {
           hostname = "phasma";
           desktop = "hyprland";
