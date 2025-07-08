@@ -218,7 +218,7 @@
           # Import nixpkgs for the target system, applying overlays directly
           pkgsWithOverlays = import nixpkgs {
              inherit system;
-             config = { allowUnfree = true; nvidia.acceptLicense = true; }; # Ensure consistent config
+             config = { allowUnfree = true; }; # Ensure consistent config
              # Pass the list of overlay functions directly
              overlays = builtins.attrValues self.overlays;
           };
