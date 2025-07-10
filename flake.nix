@@ -74,7 +74,6 @@
 	"sangmin@workhorse" = helper.mkHome {
 	  hostname = "workhorse";
 	  username= "sangmin";
-	  desktop = "hyprland";
 	};
         # Workstations
         "martin@phasma" = helper.mkHome {
@@ -160,7 +159,6 @@
 	};
 	workhorse = helper.mkNixos {
 	  hostname="workhorse";
-	  desktop="hyprland";
 	  username="sangmin";
 	};
         phasma = helper.mkNixos {
