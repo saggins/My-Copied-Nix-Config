@@ -10,7 +10,7 @@
 let
   installOn = [
     "blackchungus"
-    "workhouse"
+    "workhorse"
   ];
 in
 lib.mkIf (lib.elem "${hostname}" installOn) {
