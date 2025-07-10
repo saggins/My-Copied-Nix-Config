@@ -9,7 +9,6 @@
 }:
 let
   installOn = [
-    "blackchungus"
     "workhorse"
   ];
 in
