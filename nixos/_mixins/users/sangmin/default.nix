@@ -7,6 +7,7 @@
     openssh.authorizedKeys.keys = [
       "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIMp9MTt8Kv8Ba/3NCckiUxW86X7AhDOCmtAtZO3DpO6zAAAAEHNzaDpZb3VyVGV4dEhlcmU= saggins@Sangmins-MacBook-Air.local"
        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICAYJdNDpcddHw39/CSr/MEaHdHcOOyWuGRHZWCXOqil saggins@Sangmins-MacBook-Air.local"
+       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDCeiu5x60l/OtD2C5cQASJJQPGblGcRJNVlhw9NjZhG sangmin@blackchungus"
       
     ];
   };
