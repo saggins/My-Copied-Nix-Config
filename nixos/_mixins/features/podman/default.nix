@@ -7,7 +7,7 @@
   ...
 }:
 let
-  installFor = [ "martin" ];
+  installFor = [ "martin"  "sangmin"];
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
 in
 lib.mkIf (lib.elem "${username}" installFor) {
@@ -32,15 +32,16 @@ lib.mkIf (lib.elem "${username}" installFor) {
   virtualisation = {
     containers.enable = true;
     oci-containers.backend = "podman";
+    docker.enable=true;
     podman = {
       defaultNetwork.settings = {
         dns_enabled = true;
       };
-      dockerCompat = true;
-      dockerSocket.enable = true;
+      #dockerCompat = true;
+      #dockerSocket.enable = true;
       enable = true;
     };
   };
 
-  users.users.${username}.extraGroups = lib.optional config.virtualisation.podman.enable "podman";
+  users.users.${username}.extraGroups = lib.optional config.virtualisation.podman.enable "podman docker";
 }
