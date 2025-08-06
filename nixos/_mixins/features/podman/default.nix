@@ -7,7 +7,7 @@
   ...
 }:
 let
-  installFor = [ "martin", "sangmin" ];
+  installFor = [ "martin" "sangmin" ];
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
 in
 lib.mkIf (lib.elem "${username}" installFor) {
