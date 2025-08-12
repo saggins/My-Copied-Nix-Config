@@ -5,6 +5,19 @@
   ...
 }:
 {
+  # Helper function for generating caddy virtual host set
+  mkCaddy = {
+    virtualHost,
+    port ? 433
+  }:
+  {
+    services.caddy = {
+      virtualHosts."${virtualHost}".extraConfig =  ''
+        reverse_proxy https://${virtualHost}:${port}
+      '';
+    };
+
+  };
   # Helper function for generating home-manager configs
   mkHome =
     {
