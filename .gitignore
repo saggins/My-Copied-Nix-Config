@@ -2,3 +2,4 @@
 result/
 pkgs/cider/cider-linux-x64.AppImage
 pkgs/pico8/pico-8_0.2.6b_amd64.zip
+.vscode
