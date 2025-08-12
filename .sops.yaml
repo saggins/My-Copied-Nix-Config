@@ -19,8 +19,14 @@
 # sops updatekeys secrets/secrets.yaml
 keys:
   - &user_blackchungus age1ulzqxrr328xc0ejmadqm7ts7svlyjmvpvtpdddxtj3jjz0q7rs5se528wv
+  - &admin_blackchungus age14nq7kta2g4ugccm444srcc25qdtaelp47qwl45uayj3675803cws7j4rar
+  - &user_workhorse age1f823k5zataz9f5drq5qnpj4ah0jwsghxalf5gvvwnn0mdgsg8sqqsmqt2w
+  - &admin_workhorse age1esc733a49rl960gv8nk67r9vl4tk8nmh3jjuneypmfpxhah65czss2phlu
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
     - age:
       - *user_blackchungus
+      - *admin_blackchungus
+      - *user_workhorse
+      - *admin_workhorse
