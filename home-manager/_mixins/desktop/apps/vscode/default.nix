@@ -112,7 +112,7 @@ lib.mkIf (lib.elem username installFor) {
         ++ lib.optionals isLinux [
           vscode-extensions.ms-vscode.cpptools-extension-pack
           vscode-marketplace.ms-vsliveshare.vsliveshare
-          vscode-marketplace.vadimcn.vscode-lldb
+          #vscode-marketplace.vadimcn.vscode-lldb
         ];
       mutableExtensionsDir = true;
       package = pkgs.unstable.vscode;
