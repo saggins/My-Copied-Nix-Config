@@ -11,6 +11,7 @@ in
 lib.mkIf (lib.elem "${hostname}" installOn) {
   services.caddy = {
     enable = true;
+    # TODO: This will not work; xcaddy is a build system thingy NEEDS OVERLAY FML
     package = pkgs.xcaddy;
     email = "sangmin@sagg.in";
     acmeCA = throw "haven't set the acmeCA, consider going off branch";
