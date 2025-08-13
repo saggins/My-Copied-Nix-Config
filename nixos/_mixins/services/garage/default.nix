@@ -11,7 +11,7 @@ in
 lib.mkIf (lib.elem "${hostname}" installOn) {
   services.garage = {
     enable= true;
-    package= pkgs.garage2;
+    package= pkgs.garage_2;
     settings = ''
       db_engine = "sqlite"
 
