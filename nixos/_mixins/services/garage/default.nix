@@ -1,18 +1,13 @@
 {
   hostname,
   lib,
+  config,
   ...
 }:
 let
   installOn = [ "workhorse" ];
 in
 lib.mkIf (lib.elem "${hostname}" installOn) {
-  sops.secrets.garage-secrets = {
-    #group="garage";
-    #mode ="0644";
-    #owner = "garage";
-    sops="../../../../secrets/garage.yaml ";
-  };
   services.garage = {
     enable= true;
     settings = ''
@@ -22,7 +17,7 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
 
       rpc_bind_addr = "[::]:3901"
       rpc_public_addr = "127.0.0.1:3901"
-      rpc_secret = "${(builtins.fromTOML builtins.readFile "/run/secrets/garage.yaml").rpc_secret})"
+      rpc_secret = "${(builtins.fromTOML config.sops.secrets.garage ).rpc_secret})"
 
       [s3_api]
       s3_region = "garage"
@@ -39,8 +34,8 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
 
       [admin]
       api_bind_addr = "[::]:3903"
-      admin_token = "${(builtins.fromTOML builtins.readFile "/run/secrets/garage.yaml").admin_token})"
-      metrics_token = "${(builtins.fromTOML builtins.readFile "/run/secrets/garage.yaml").metrics_token})"
+      admin_token = "${(builtins.fromTOML config.sops.secrets.garage).admin_token})"
+      metrics_token = "${(builtins.fromTOML config.sops.secrets.garage).metrics_token})"
     '';
   };
 }
