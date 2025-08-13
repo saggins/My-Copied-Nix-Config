@@ -19,7 +19,6 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
 
       rpc_bind_addr = "[::]:3901"
       rpc_public_addr = "127.0.0.1:3901"
-      rpc_secret = "${(builtins.fromTOML config.sops.secrets.garage ).rpc_secret})"
 
       [s3_api]
       s3_region = "garage"
@@ -36,8 +35,17 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
 
       [admin]
       api_bind_addr = "[::]:3903"
-      admin_token = "${(builtins.fromTOML config.sops.secrets.garage).admin_token})"
-      metrics_token = "${(builtins.fromTOML config.sops.secrets.garage).metrics_token})"
     '';
+    environmentFile = config.sops.secrets.garage-env.path;
+  };
+  sops = {
+    secrets = {
+      garage-env  = lib.mkIf config.services.garage.enable {
+        group = "garage";
+        owner = "garage";
+        mode= "0644";
+        sopsFile = ../../../../secrets/garage.yaml;
+      };
+    };
   };
 }
