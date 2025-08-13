@@ -12,7 +12,8 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
   sops.secrets= {
     garage-config= {
       group ="garage";
-      user = "garage";
+      format="ini";
+      owner = "garage";
       mode = "0644";
       path = "/mnt/data/garage/garage-config.ini";
       sopsFile = ../../../../secrets/garage.yaml;
