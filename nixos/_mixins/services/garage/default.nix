@@ -7,7 +7,7 @@
 }:
 let
   installOn = [ "workhorse" ];
-  smbPath = "/mnt/cheesecakeExternalHdd";
+  smbPath = "/mnt/cheesecakeExternalHdd/garage";
 in
 lib.mkIf (lib.elem "${hostname}" installOn) {
   # mounting smb 
