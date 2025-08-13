@@ -41,6 +41,9 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
     };
     environmentFile = config.sops.secrets.garage-env.path;
   };
+  config.systemd.services.garage= {
+    DynamicUser=false;
+  };
   sops = {
     secrets = {
       garage-env  = lib.mkIf config.services.garage.enable {
