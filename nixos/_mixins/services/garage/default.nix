@@ -33,11 +33,9 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
       ];
       db_engine = "sqlite";
       replication_factor = 1;
-      # TODO: bind to tailscale ip so rishabh has access
       rpc_bind_addr = "[::]:3901";
       rpc_public_addr = "100.99.219.83:3901";
 
-      # TODO: Make the domains match sagg.in infrastucutre ( just incase, certs become a thing)
       s3_api= {
         s3_region = "garage";
         api_bind_addr = "[::]:3900";
@@ -61,6 +59,7 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
     };
     environmentFile = config.sops.secrets.garage-env.path;
   };
+  networking.firewall = lib.mkIf config.services.garage.enable {allowedTCPPorts = [3900];};
   sops = {
     secrets = {
       garage-smb-secrets = lib.mkIf config.services.garage.enable {
