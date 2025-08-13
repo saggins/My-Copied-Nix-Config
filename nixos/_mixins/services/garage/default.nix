@@ -25,30 +25,28 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
     enable= true;
     package= pkgs.garage_2;
     settings = {
-      # TODO: need to mount smb and add to data dir 
       data_dir = [
         {
           path = smbPath;
           capacity = "10T";
         }
       ];
-      # TODO: Consider not using sqlite... not rlly sure tbh
       db_engine = "sqlite";
       replication_factor = 1;
       # TODO: bind to tailscale ip so rishabh has access
       rpc_bind_addr = "[::]:3901";
-      rpc_public_addr = "127.0.0.1:3901";
+      rpc_public_addr = "100.99.219.83:3901";
 
       # TODO: Make the domains match sagg.in infrastucutre ( just incase, certs become a thing)
       s3_api= {
         s3_region = "garage";
         api_bind_addr = "[::]:3900";
-        root_domain = ".s3.garage.localhost";
+        root_domain = ".s3.garage.internal.sagg.in";
       };
 
       s3_web= {
         bind_addr = "[::]:3902";
-        root_domain = ".web.garage.localhost";
+        root_domain = ".web.garage.internal.sagg.in";
         index = "index.html";
       };
 
