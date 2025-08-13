@@ -11,9 +11,10 @@ let
   # Declare which hosts have Tailscale enabled.
   installOn = [
     "blackchungus"
+    "workhorse"
   ];
   tsExitNodes = [
-    "blackchungus"
+    "workhorse"
   ];
 in
 lib.mkIf (lib.elem "${hostname}" installOn) {
