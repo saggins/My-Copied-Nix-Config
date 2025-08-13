@@ -7,13 +7,13 @@
 }:
 let
   installOn = [ "workhorse" ];
-  smbPath = "/mnt/cheesecakeExternalHdd/garage";
+  smbPath = "/mnt/cheesecakeExternalHdd";
 in
 lib.mkIf (lib.elem "${hostname}" installOn) {
   # mounting smb 
   environment.systemPackages = lib.mkIf config.services.garage.enable [pkgs.cifs-utils];
   fileSystems."${smbPath}" = lib.mkIf config.services.garage.enable {
-    device = "//10.0.0.166/8dgjdweh";
+    device = "//10.0.0.166/8dgjdweh/garage";
     fsType = "cifs";
     options = let 
       automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
