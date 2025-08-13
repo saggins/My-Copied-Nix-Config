@@ -25,7 +25,12 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
     package= pkgs.garage_2;
     settings = {
       # TODO: need to mount smb and add to data dir 
-      data_dir = [smbPath];
+      data_dir = [
+        {
+          path = smbPath;
+          capacity = "10T";
+        }
+      ];
       # TODO: Consider not using sqlite... not rlly sure tbh
       db_engine = "sqlite";
       replication_factor = 1;
