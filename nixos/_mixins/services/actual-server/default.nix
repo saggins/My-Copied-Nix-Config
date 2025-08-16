@@ -12,6 +12,7 @@ in
 lib.mkIf (lib.elem hostname installOn) {
   services.actual = {
     enable = true;
+    settings.hostname = "127.0.0.1";
   };
 
   services.caddy = lib.mkIf (config.services.actual.enable && config.services.tailscale.enable) {
