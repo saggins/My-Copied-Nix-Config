@@ -2,10 +2,12 @@
   hostname,
   lib,
   config,
+  tailNet,
   ...
 }:
 let
   installOn = [ "workhorse" ];
+  basePath = "/actual";
 in
 lib.mkIf (lib.elem hostname installOn) {
   services.actual = {
@@ -14,9 +16,13 @@ lib.mkIf (lib.elem hostname installOn) {
 
   services.caddy = lib.mkIf (config.services.actual.enable && config.services.tailscale.enable ) {
     enable = true;
-    virtualHosts."actual.${hostname}.ts.net" = {
+    virtualHosts."${hostname}.${tailNet}" = {
       extraConfig = ''
-        reverse_proxy ${config.services.actual.settings.hostname}:${builtins.toString config.services.actual.settings.port}
+        redir ${basePath} ${basePath}/
+        handle_path ${basePath}/* {
+          reverse_proxy ${config.services.actual.hostname}:${config.services.actual.port}
+          header_up ${config.services.actual.hostname}
+        }
       '';
     };
   };
