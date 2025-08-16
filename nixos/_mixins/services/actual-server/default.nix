@@ -21,8 +21,9 @@ lib.mkIf (lib.elem hostname installOn) {
       extraConfig = ''
         redir ${basePath} ${basePath}/
         handle_path ${basePath}/* {
-          reverse_proxy ${config.services.actual.settings.hostname}:${builtins.toString config.services.actual.settings.port}
-          header_up ${config.services.actual.settings.hostname}
+          reverse_proxy ${config.services.actual.settings.hostname}:${builtins.toString config.services.actual.settings.port} {
+            header_up ${config.services.actual.settings.hostname}
+          }
         }
       '';
     };
