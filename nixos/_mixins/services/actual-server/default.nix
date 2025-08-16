@@ -14,13 +14,13 @@ lib.mkIf (lib.elem hostname installOn) {
     enable = true;
   };
 
-  services.caddy = lib.mkIf (config.services.actual.enable && config.services.tailscale.enable ) {
+  services.caddy = lib.mkIf (config.services.actual.enable && config.services.tailscale.enable) {
     enable = true;
     virtualHosts."${hostname}.${tailNet}" = {
       extraConfig = ''
         redir ${basePath} ${basePath}/
         handle_path ${basePath}/* {
-          reverse_proxy ${config.services.actual.hostname}:${config.services.actual.port}
+          reverse_proxy ${config.services.actual.settings.hostname}:${config.services.actual.settings.port}
           header_up ${config.services.actual.hostname}
         }
       '';
