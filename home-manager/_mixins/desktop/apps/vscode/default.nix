@@ -28,6 +28,11 @@ lib.mkIf (lib.elem username installFor) {
     shellcheck
     shfmt
     stylua
+
+    cmake
+    clang-tools
+    picotool
+    openocd-rp2040
   ];
 
   # NOTE! I avoid using home-manager to configure settings.json because it
