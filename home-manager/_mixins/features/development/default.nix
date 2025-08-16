@@ -12,26 +12,26 @@
 
   home = {
     file = {
-      "${config.xdg.configHome}/fish/functions/h.fish".text = builtins.readFile ../../../_mixins/configs/h.fish;
+      "${config.xdg.configHome}/fish/functions/h.fish".text =
+        builtins.readFile ../../../_mixins/configs/h.fish;
     };
 
     # A Modern Unix experience
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
-    packages =
-      with pkgs;
-      [
-        breezy # bzr client
-        difftastic # Modern Unix `diff`
-        ghbackup # Backup GitHub repositories
-        ghorg # Clone all repositories in a GitHub organization
-        git-igitt # git log/graph
-        gk-cli # GitKraken CLI
-        h # autojump for git projects
-        onefetch # fetch git project info
-        quilt # patch manager
-        tokei # Modern Unix `wc` for code
-        #inshellisense #eww microsoft: intellisense for shell
-      ];
+    packages = with pkgs; [
+      breezy # bzr client
+      difftastic # Modern Unix `diff`
+      ghbackup # Backup GitHub repositories
+      ghorg # Clone all repositories in a GitHub organization
+      git-igitt # git log/graph
+      gk-cli # GitKraken CLI
+      h # autojump for git projects
+      onefetch # fetch git project info
+      quilt # patch manager
+      tokei # Modern Unix `wc` for code
+      lazygit
+      #inshellisense #eww microsoft: intellisense for shell
+    ];
   };
 
   programs = {
@@ -95,6 +95,7 @@
       ignores = [
         "*.log"
         "*.out"
+        changes
         ".DS_Store"
         "bin/"
         "dist/"
