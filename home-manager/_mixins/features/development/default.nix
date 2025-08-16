@@ -95,7 +95,6 @@
       ignores = [
         "*.log"
         "*.out"
-        changes
         ".DS_Store"
         "bin/"
         "dist/"
