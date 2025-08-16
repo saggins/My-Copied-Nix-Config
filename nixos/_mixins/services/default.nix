@@ -8,5 +8,6 @@
     ./tailscale
     ./unifi
     ./actual-server
+    ./garage
   ];
 }
