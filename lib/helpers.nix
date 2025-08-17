@@ -16,7 +16,8 @@
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
-      isLaptop = hostname != "vader" && hostname != "phasma" && hostname != "revan" && hostname != "malak";
+      isLaptop =
+        hostname != "vader" && hostname != "phasma" && hostname != "revan" && hostname != "malak";
       isLima = hostname == "blackace" || hostname == "defender" || hostname == "fighter";
       isWorkstation = builtins.isString desktop;
     in
@@ -52,9 +53,10 @@
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
-      isLaptop = hostname != "vader" && hostname != "phasma" && hostname != "revan" && hostname != "malak";
+      isLaptop =
+        hostname != "vader" && hostname != "phasma" && hostname != "revan" && hostname != "malak";
       isWorkstation = builtins.isString desktop;
-      tailNet = "drongo-gamma.ts.net";
+      tailNet = "comet-court.ts.net";
     in
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
