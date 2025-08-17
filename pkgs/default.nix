@@ -2,7 +2,7 @@
 # You can build them using 'nix build .#example'
 pkgs: {
   #waiting for PR to go through, temporary
-  actual-server = pkgs.callPackage ./actual-server { };
+  actual-server-updated = pkgs.callPackage ./actual-server { };
 
   # Local packages being prepped for upstreaming
   cider = pkgs.callPackage ./cider { };
