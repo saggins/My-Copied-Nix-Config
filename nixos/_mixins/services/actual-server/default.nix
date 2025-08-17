@@ -13,7 +13,7 @@ in
 lib.mkIf (lib.elem hostname installOn) {
   services.actual = {
     enable = true;
-    package = pkgs.actual-server-updated;
+    package = pkgs.actual-server;
     settings.hostname = "127.0.0.1";
     settings.webRoot = basePath;
   };
