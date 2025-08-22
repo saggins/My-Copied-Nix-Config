@@ -13,6 +13,10 @@ in
 lib.mkIf (lib.elem "${hostname}" installOn) {
   services.suwayomi-server = {
     enable = true;
+    settings.server = {
+      ip = "127.0.0.1";
+      port = "25039";
+    };
   };
 
   services.caddy =
