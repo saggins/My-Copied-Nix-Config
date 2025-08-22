@@ -8,7 +8,7 @@
 }:
 let
   installOn = [ "workhorse" ];
-  basePath = "tachidesk";
+  basePath = "/tachidesk";
 in
 lib.mkIf (lib.elem "${hostname}" installOn) {
   services.suwayomi-server = {
