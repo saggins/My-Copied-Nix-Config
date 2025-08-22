@@ -23,7 +23,7 @@ lib.mkIf (lib.elem hostname installOn) {
     virtualHosts."${hostname}.${tailNet}" = {
       extraConfig = ''
         handle_path ${basePath}/* {
-          reverse_proxy ${config.services.actual.settings.hostname}:${builtins.toString config.services.actual.settings.port} {
+          reverse_proxy ${config.services.actual.settings.hostname}:${builtins.toString config.services.actual.settings.port}
         }
       '';
     };
