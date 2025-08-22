@@ -3,7 +3,7 @@
   lib,
   pkgs,
   config,
-  tailNet
+  tailNet,
   ...
 }:
 let
