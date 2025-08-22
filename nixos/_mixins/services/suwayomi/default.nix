@@ -17,7 +17,7 @@ in lib.mkIf ( lib.elem "${hostname}" installOn): {
     virtualHosts."${hostname}.${tailNet}" = {
       extraConfig = ''
         handle_path ${basePath}/* {
-          reverse_proxy ${config.services.suwayomi-server.settings.hostname}:${builtins.toString config.services.suwayomi-server.settings.port} {
+          reverse_proxy ${config.services.suwayomi-server.settings.ip}:${builtins.toString config.services.suwayomi-server.settings.port} {
         }
       '';
     };

@@ -9,5 +9,6 @@
     ./unifi
     ./actual-server
     ./garage
+    ./suwayomi
   ];
 }
