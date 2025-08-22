@@ -13,7 +13,7 @@ in
 lib.mkIf (lib.elem "${hostname}" installOn) {
   services.suwayomi-server = {
     enable = true;
-    package = pkgs.unstable.suwayomi-server
+    package = pkgs.unstable.suwayomi-server;
     settings.server = {
       ip = if config.services.tailscale.enable then "${hostname}.${tailNet}" else "127.0.0.1";
       port = 25039;
