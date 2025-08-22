@@ -19,4 +19,9 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
       port = 25039;
     };
   };
+
+  services.komga = {
+    enable = true;
+    settings.server.port = 44857;
+  };
 }
