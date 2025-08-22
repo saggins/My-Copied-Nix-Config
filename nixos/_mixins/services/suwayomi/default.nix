@@ -27,7 +27,7 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
           extraConfig = ''
             handle_path ${basePath}/* {
               reverse_proxy ${config.services.suwayomi-server.settings.server.ip}:${builtins.toString config.services.suwayomi-server.settings.server.port} {
-                header_up Host ${config.services.actual.settings.hostname} 
+                header_up Host ${config.services.actual.settings.hostname}:${builtins.toString config.services.actual.settings.port}
               }
             }
           '';
