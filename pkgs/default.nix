@@ -1,6 +1,9 @@
 # Custom packages, that can be defined similarly to ones from nixpkgs
 # You can build them using 'nix build .#example'
 pkgs: {
+  # Local Package for test
+  comic-upscaler = pkgs.callPackage ./comic-upscaler { };
+
   #waiting for PR to go through, temporary
   actual-server-updated = pkgs.callPackage ./actual-server { };
 
