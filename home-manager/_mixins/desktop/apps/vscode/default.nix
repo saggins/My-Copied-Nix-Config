@@ -28,6 +28,9 @@ lib.mkIf (lib.elem username installFor) {
     shellcheck
     shfmt
     stylua
+
+    clang-tools
+    libgcc.lib
   ];
 
   # NOTE! I avoid using home-manager to configure settings.json because it
