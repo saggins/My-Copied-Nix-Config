@@ -12,9 +12,6 @@ let
   smbPath = "/mnt/manga";
 in
 lib.mkIf (lib.elem "${hostname}" installOn) {
-  users.users.suwayomi-server = {
-    uid = 955;
-  };
   services.suwayomi-server = {
     enable = true;
     package = pkgs.unstable.suwayomi-server;
@@ -37,7 +34,7 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
     options =
       let
         automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
-        user_perms = "uid=955,gid=1000,file_mode=0777,dir_mode=0777";
+        user_perms = "uid=1000,gid=1000,file_mode=0777,dir_mode=0777";
       in
       [ "${automount_opts},${user_perms},credentials=/etc/nixos/smb-secrets" ];
   };
