@@ -11,7 +11,7 @@ pkgs: {
   defold-bob = pkgs.callPackage ./defold-bob { };
   defold-gdc = pkgs.callPackage ./defold-gdc { };
   station = pkgs.callPackage ./station { };
-  wavebox = pkgs.callPackage ./wavebox { };
+  # wavebox = pkgs.callPackage ./wavebox { };
   nerd-font-patcher = pkgs.callPackage ./nerd-font-patcher { };
 
   # Local packages to prevent unintended upgrades or carrying patches

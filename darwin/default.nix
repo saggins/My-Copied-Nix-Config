@@ -128,7 +128,9 @@
     activationScripts = {
       nixos-needsreboot = {
         supportsDryActivation = true;
-        text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
+        text = "${
+          lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default
+        } \"$systemConfig\" || true";
       };
       # reload the settings and apply them without the need to logout/login
       postUserActivation.text = ''
@@ -207,7 +209,6 @@
         # TODO: Make this user-specific
         persistent-apps = [
           "/Applications/Brave Browser.app"
-          "/Applications/Wavebox.app"
           "/Users/${username}/Applications/Home Manager Apps/Telegram.app"
           "/Users/${username}/Applications/Home Manager Apps/Discord.app"
           "/Users/${username}/Applications/Home Manager Apps/Cinny.app"

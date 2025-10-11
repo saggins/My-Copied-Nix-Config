@@ -6,7 +6,7 @@
   ...
 }:
 let
-  forFamily = [  ];
+  forFamily = [ ];
   forMartin = [ "sangmin" ];
 in
 {
@@ -21,7 +21,6 @@ in
       brave
       chromium
       mullvad-browser
-      wavebox
     ];
 
   # TODO: Configure Microsoft Edge policy
@@ -173,12 +172,12 @@ in
           "Locked" = true;
         };
         # Check about:support for extension/add-on ID strings.
-       #ExtensionSettings = {
-       #  "support@lastpass.com" = {
-       #    install_url = "https://addons.mozilla.org/firefox/downloads/latest/lastpass-password-manager/latest.xpi";
-       #    installation_mode = "force_installed";
-       #  };
-       #};
+        #ExtensionSettings = {
+        #  "support@lastpass.com" = {
+        #    install_url = "https://addons.mozilla.org/firefox/downloads/latest/lastpass-password-manager/latest.xpi";
+        #    installation_mode = "force_installed";
+        #  };
+        #};
         "ExtensionUpdate" = true;
         "FirefoxHome" = {
           "Search" = true;
