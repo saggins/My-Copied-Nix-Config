@@ -1,4 +1,9 @@
-{ desktop, lib, pkgs, ... }:
+{
+  desktop,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (pkgs.stdenv) isLinux;
   audioPlayer = [ "org.gnome.Decibels.desktop" ];
@@ -29,16 +34,18 @@ in
   dconf.settings = lib.mkIf isLinux {
     "io/github/celluloid-player/celluloid" = with lib.hm.gvariant; {
       csd-enable = if (desktop == "pantheon") then false else true;
-      dark-theme-enable = true;
+      dark-theme-enable = false;
     };
   };
-  home.packages = with pkgs; lib.optionals isLinux [
-    celluloid               # video player
-    decibels                # audio player
-    gnome-calculator        # calculator
-    loupe                   # image viewer
-    papers                  # document viewer
-  ];
+  home.packages =
+    with pkgs;
+    lib.optionals isLinux [
+      celluloid # video player
+      decibels # audio player
+      gnome-calculator # calculator
+      loupe # image viewer
+      papers # document viewer
+    ];
   xdg = lib.mkIf isLinux {
     enable = true;
     mime.enable = true;
