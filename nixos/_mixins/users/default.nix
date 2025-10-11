@@ -12,6 +12,7 @@
       "input"
       "users"
       "wheel"
+      "plugdev"
     ];
     homeMode = "0755";
     isNormalUser = true;
