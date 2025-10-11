@@ -40,7 +40,7 @@
     let
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-      stateVersion = "24.11";
+      stateVersion = "25.05";
       helper = import ./lib { inherit inputs outputs stateVersion; };
     in
     {
