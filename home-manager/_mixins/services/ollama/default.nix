@@ -1,5 +1,5 @@
 { pkgs, ... }:
-{
+let {
 
   services.ollama = {
     acceleration = "rocm";

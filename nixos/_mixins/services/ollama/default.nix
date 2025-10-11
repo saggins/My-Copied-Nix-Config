@@ -3,13 +3,13 @@
   isWorkstation,
   lib,
   pkgs,
-  username,
+  hostname,
   ...
 }:
 let
-  installFor = [ "sangmin" ];
+  installOn = [ "blackchungus" ];
 in
-lib.mkIf (lib.elem "${username}" installFor) {
+lib.mkIf (lib.elem "${hostname}" installOn) {
   services.open-webui = {
     enable = true;
     port = 8123;
