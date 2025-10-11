@@ -11,8 +11,8 @@ let
 in
 lib.mkIf (lib.elem "${username}" installFor) {
   services.open-webui = {
-    enable=true;
-    port=8123;
-    host="100.115.55.118";
+    enable = true;
+    port = 8123;
+    host = "100.115.55.118";
   };
 }
