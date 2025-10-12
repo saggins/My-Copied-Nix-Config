@@ -13,6 +13,6 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
   services.ollama = {
     acceleration = "rocm";
     enable = true;
-    package = pkgs.unstable.ollama-rocm;
+    package = pkgs.ollama-rocm;
   };
 }
