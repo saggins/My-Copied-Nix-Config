@@ -71,7 +71,43 @@
       #"video=DP-1:3440x1440@100"
     ];
   };
+  users.groups.plugdev = { };
+  users.users.sangmin.extraGroups = [
+    "plugdev"
+    "dialout"
+  ];
+  services.udev.packages = [ pkgs.openocd ];
 
+  services.udev.extraRules = ''
+    # https://raw.githubusercontent.com/raspberrypi/picotool/master/udev/60-picotool.rules
+    # Copy this file to /etc/udev/rules.d/
+    # You can reload the udev rules with "udevadm control --reload"
+
+    SUBSYSTEM=="usb", \
+        ATTRS{idVendor}=="2e8a", \
+        ATTRS{idProduct}=="0003", \
+        TAG+="uaccess", \
+        MODE="660", \
+        GROUP="plugdev"
+    SUBSYSTEM=="usb", \
+        ATTRS{idVendor}=="2e8a", \
+        ATTRS{idProduct}=="0009", \
+        TAG+="uaccess", \
+        MODE="660", \
+        GROUP="plugdev"
+    SUBSYSTEM=="usb", \
+        ATTRS{idVendor}=="2e8a", \
+        ATTRS{idProduct}=="000a", \
+        TAG+="uaccess", \
+        MODE="660", \
+        GROUP="plugdev"
+    SUBSYSTEM=="usb", \
+        ATTRS{idVendor}=="2e8a", \
+        ATTRS{idProduct}=="000f", \
+        TAG+="uaccess", \
+        MODE="660", \
+        GROUP="plugdev"
+  '';
   hardware = {
   };
   services.xserver.videoDrivers = [
