@@ -44,7 +44,7 @@ jobs:
         with:
           extra-conf: |
             lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
+      - uses: DeterminateSystems/flakehub-cache-action@v2
       - name: ${{ matrix.package }}
         run: |
           nix build .#${{ matrix.package }}.packages.x86_64-linux.default -L
@@ -90,7 +90,7 @@ jobs:
         with:
           extra-conf: |
             lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
+      - uses: DeterminateSystems/flakehub-cache-action@v2
       - name: ${{ matrix.package }}
         run: |
             nix build .#nixosConfigurations.vader.pkgs.${{ matrix.package }} -L
@@ -143,7 +143,7 @@ jobs:
         with:
           extra-conf: |
             lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
+      - uses: DeterminateSystems/flakehub-cache-action@v2
       - name: ${{ matrix.package }}
         run: |
           if ! nix eval ".#${{ matrix.package }}.meta.license.spdxId" --raw 2>/dev/null; then
@@ -189,7 +189,7 @@ jobs:
         with:
           extra-conf: |
             lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
+      - uses: DeterminateSystems/flakehub-cache-action@v2
       - name: ${{ matrix.package }}
         run: |
           nix build .#darwinConfigurations.momin.pkgs.${{ matrix.package }} -L
@@ -250,7 +250,7 @@ jobs:
         with:
           extra-conf: |
             lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
+      - uses: DeterminateSystems/flakehub-cache-action@v2
       - name: ${{ matrix.package }}
         run: |
           nix build .#${{ matrix.package }} -L
@@ -311,7 +311,7 @@ jobs:
         with:
           extra-conf: |
             lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
+      - uses: DeterminateSystems/flakehub-cache-action@v2
       - name: ${{ matrix.package }}
         run: |
           nix build .#${{ matrix.package }} -L
