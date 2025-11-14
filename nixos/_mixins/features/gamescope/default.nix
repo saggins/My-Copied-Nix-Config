@@ -1,6 +1,7 @@
 { pkgs, username, ... }:
-{ # taken from https://nixos.wiki/wiki/Steam#gamescope 
-# TODO: Enable username checking. just in case, multiple nixos becoems a thing
+{
+  # taken from https://nixos.wiki/wiki/Steam#gamescope
+  # TODO: Enable username checking. just in case, multiple nixos becoems a thing
   boot.kernelPackages = pkgs.linuxPackages;
   programs = {
     gamescope = {
@@ -17,7 +18,7 @@
 
   hardware.xone.enable = true; # xbox cvontroler
   environment = {
-    systemPackages = [pkgs.mangohud];
+    systemPackages = [ pkgs.mangohud ];
   };
-    
-}  
+
+}
