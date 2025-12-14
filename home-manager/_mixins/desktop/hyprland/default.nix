@@ -50,6 +50,7 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
+    package = pkgs.unstable.hyprland;
     settings = {
       inherit (monitors) monitor workspace;
       "$mod" = "SUPER";
@@ -318,7 +319,7 @@ in
     extraPortals = [
       pkgs.xdg-desktop-portal
       pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal-hyprland
+      (lib.hiPrio pkgs.xdg-desktop-portal-hyprland)
     ];
     xdgOpenUsePortal = true;
   };

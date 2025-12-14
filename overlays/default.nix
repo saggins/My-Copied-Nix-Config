@@ -8,51 +8,51 @@
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
   modifications = final: prev: {
-    
-    # Remote Desktop feature not merged
-    # https://github.com/hyprwm/xdg-desktop-portal-hyprland/issues/252 
-    # https://github.com/hyprwm/xdg-desktop-portal-hyprland/pull/308 (Implement remote desktop portal)
-#   hyprland-protocols = prev.hyprland-protocols.overrideAttrs (old: rec {
-#         pname = "hyprland-protocols";
-#         version = "0.6.4-unstable-2025-06-11";
-#         src = prev.fetchFromGitHub {
-#           owner = "hyprwm";
-#           repo = "hyprland-protocols";
-#           rev = "5433c38e9755e83905376ed0faf5c624869e24b9";
-#           hash = "sha256-mnejydAjW+DW5aVbUig6nSBUh5DTMYZXZylMGKc1enk=";
-#         };
-#   });
-#
-#   xdg-desktop-portal-hyprland = prev.xdg-desktop-portal-hyprland.overrideAttrs (old: rec {
-#     pname = "xdg-desktop-portal-hyprland";
-#     version = "1.3-unstable-2025-06-11";
-#     src = prev.fetchFromGitHub {
-#       owner = "hyprwm";
-#       repo = "xdg-desktop-portal-hyprland";
-#       rev = "2cb4db60a29a5622c5f4d042de7179268f7e9fc0";
-#       sha256 = "sha256-JslocIQeVBri0vMQNQV4ZfW5phnvIgyDPc90kPnNG00=";
-#     };
-#     buildInputs = old.buildInputs ++ [ final.pkgs.hyprland-protocols  prev.pkgs.libei];
-#   });
 
-   #https://github.com/mpobaschnig/vaults/issues/164
-   # Ovveride Vaults b/c it's broken 
-   vaults = prev.vaults.overrideAttrs (old: rec {
-     pname = "vaults";
-     version = "0.8.0-2025-06-19";
-     src = prev.fetchFromGitHub {
-       owner = "mpobaschnig";
-       repo = "vaults";
-       rev = "v0.8.0";
-       sha256 = "sha256-USVP/7TNdpUNx1kDsCReGYIP8gHUeij2dqy8TR4R+CE=";
-     };
-     patches=[];
-     cargoDeps = prev.rustPlatform.fetchCargoVendor {
-      inherit src;
-      name = "vaults-0.8.0";
-      hash = "sha256-93X2BCn6Ih2DqYJNvYvUCYrC1E6wpCT5X8Hyux/8mno=";
-    };
-   });
+    # Remote Desktop feature not merged
+    # https://github.com/hyprwm/xdg-desktop-portal-hyprland/issues/252
+    # https://github.com/hyprwm/xdg-desktop-portal-hyprland/pull/308 (Implement remote desktop portal)
+    #   hyprland-protocols = prev.hyprland-protocols.overrideAttrs (old: rec {
+    #         pname = "hyprland-protocols";
+    #         version = "0.6.4-unstable-2025-06-11";
+    #         src = prev.fetchFromGitHub {
+    #           owner = "hyprwm";
+    #           repo = "hyprland-protocols";
+    #           rev = "5433c38e9755e83905376ed0faf5c624869e24b9";
+    #           hash = "sha256-mnejydAjW+DW5aVbUig6nSBUh5DTMYZXZylMGKc1enk=";
+    #         };
+    #   });
+    #
+    #   xdg-desktop-portal-hyprland = prev.xdg-desktop-portal-hyprland.overrideAttrs (old: rec {
+    #     pname = "xdg-desktop-portal-hyprland";
+    #     version = "1.3-unstable-2025-06-11";
+    #     src = prev.fetchFromGitHub {
+    #       owner = "hyprwm";
+    #       repo = "xdg-desktop-portal-hyprland";
+    #       rev = "2cb4db60a29a5622c5f4d042de7179268f7e9fc0";
+    #       sha256 = "sha256-JslocIQeVBri0vMQNQV4ZfW5phnvIgyDPc90kPnNG00=";
+    #     };
+    #     buildInputs = old.buildInputs ++ [ final.pkgs.hyprland-protocols  prev.pkgs.libei];
+    #   });
+
+    #https://github.com/mpobaschnig/vaults/issues/164
+    # Ovveride Vaults b/c it's broken
+    vaults = prev.vaults.overrideAttrs (old: rec {
+      pname = "vaults";
+      version = "0.8.0-2025-06-19";
+      src = prev.fetchFromGitHub {
+        owner = "mpobaschnig";
+        repo = "vaults";
+        rev = "v0.8.0";
+        sha256 = "sha256-USVP/7TNdpUNx1kDsCReGYIP8gHUeij2dqy8TR4R+CE=";
+      };
+      patches = [ ];
+      cargoDeps = prev.rustPlatform.fetchCargoVendor {
+        inherit src;
+        name = "vaults-0.8.0";
+        hash = "sha256-93X2BCn6Ih2DqYJNvYvUCYrC1E6wpCT5X8Hyux/8mno=";
+      };
+    });
     # Override avizo to use a specific commit that includes these fixes:
     # - https://github.com/heyjuvi/avizo/pull/76 (fix options of lightctl)
     # - https://github.com/heyjuvi/avizo/pull/73 (chore: fix size of dark theme icons)
@@ -68,37 +68,59 @@
     });
 
     gitkraken = prev.gitkraken.overrideAttrs (old: rec {
-      buildInputs = prev.buildInputs ++ [prev.pkgs.libei];
+      buildInputs = prev.buildInputs ++ [ prev.pkgs.libei ];
       version = "11.1.1";
 
-      src = {
-        x86_64-linux = prev.fetchzip {
-          url = "https://api.gitkraken.dev/releases/production/linux/x64/${version}/gitkraken-amd64.tar.gz";
-          hash = "sha256-VKJjwWAhN53h9KU06OviIEL5SiIDwPtb7cKJSR4L9YA=";
-        };
+      src =
+        {
+          x86_64-linux = prev.fetchzip {
+            url = "https://api.gitkraken.dev/releases/production/linux/x64/${version}/gitkraken-amd64.tar.gz";
+            hash = "sha256-VKJjwWAhN53h9KU06OviIEL5SiIDwPtb7cKJSR4L9YA=";
+          };
 
-        x86_64-darwin = prev.fetchzip {
-          url = "https://api.gitkraken.dev/releases/production/darwin/x64/${version}/installGitKraken.dmg";
-          hash = "";
-        };
+          x86_64-darwin = prev.fetchzip {
+            url = "https://api.gitkraken.dev/releases/production/darwin/x64/${version}/installGitKraken.dmg";
+            hash = "";
+          };
 
-        aarch64-darwin = prev.fetchzip {
-          url = "https://api.gitkraken.dev/releases/production/darwin/arm64/${version}/installGitKraken.dmg";
-          hash = "";
-        };
-      }.${prev.stdenv.hostPlatform.system} or (throw "Unsupported system: ${prev.stdenv.hostPlatform.system}");
+          aarch64-darwin = prev.fetchzip {
+            url = "https://api.gitkraken.dev/releases/production/darwin/arm64/${version}/installGitKraken.dmg";
+            hash = "";
+          };
+        }
+        .${prev.stdenv.hostPlatform.system}
+          or (throw "Unsupported system: ${prev.stdenv.hostPlatform.system}");
     });
 
-    linuxPackages_6_12 = prev.linuxPackages_6_12.extend (_lpself: lpsuper: {
-      mwprocapture = lpsuper.mwprocapture.overrideAttrs ( old: rec {
-        pname = "mwprocapture";
-        subVersion = "4418";
-        version = "1.3.${subVersion}";
-        src = prev.fetchurl {
-          url = "https://www.magewell.com/files/drivers/ProCaptureForLinux_${version}.tar.gz";
-          sha256 = "sha256-ZUqJkARhaMo9aZOtUMEdiHEbEq10lJO6MkGjEDnfx1g=";
-        };
-      });
+    linuxPackages_6_12 = prev.linuxPackages_6_12.extend (
+      _lpself: lpsuper: {
+        mwprocapture = lpsuper.mwprocapture.overrideAttrs (old: rec {
+          pname = "mwprocapture";
+          subVersion = "4418";
+          version = "1.3.${subVersion}";
+          src = prev.fetchurl {
+            url = "https://www.magewell.com/files/drivers/ProCaptureForLinux_${version}.tar.gz";
+            sha256 = "sha256-ZUqJkARhaMo9aZOtUMEdiHEbEq10lJO6MkGjEDnfx1g=";
+          };
+        });
+      }
+    );
+
+    gamescope = prev.gamescope.overrideAttrs (old: rec {
+      src = prev.fetchFromGitHub {
+        owner = "ValveSoftware";
+        repo = "gamescope";
+        tag = "3.14.17";
+        fetchSubmodules = true;
+        hash = "sha256-Cp/CwVWNCNzE8LQsjK06nNrsoc3KehEkmdxb8eGtn98=";
+      };
+      patches = [
+        # old.patches ++[
+        # (prev.fetchpatch {
+        #   url = "https://github.com/ValveSoftware/gamescope/commit/cd8141db1d27e1ce3249e5f73a2c5da1cb41be97.diff";
+        #   hash = "sha256-ONjSInJ7M8niL5xWaNk5Z16ZMcM/A7M7bHTrgCFjrts=";
+        # })
+      ];
     });
   };
 
