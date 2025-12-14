@@ -7,6 +7,7 @@
 }:
 let
   installOn = [
+    "blackchungus"
   ];
 in
 lib.mkIf (lib.elem hostname installOn) {
@@ -20,4 +21,7 @@ lib.mkIf (lib.elem hostname installOn) {
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     };
   };
+  services.udev.extraRules = ''
+    ACTION=="add|change", ATTRS{name}=="Sony Interactive Entertainment Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+  '';
 }

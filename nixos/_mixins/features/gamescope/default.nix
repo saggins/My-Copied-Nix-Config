@@ -1,5 +1,13 @@
-{ pkgs, username, ... }:
 {
+  pkgs,
+  lib,
+  hostname,
+  ...
+}:
+let
+  installOn = [ "blackchungus" ];
+in
+lib.mkIf (lib.elem hostname installOn) {
   # taken from https://nixos.wiki/wiki/Steam#gamescope
   # TODO: Enable username checking. just in case, multiple nixos becoems a thing
   boot.kernelPackages = pkgs.linuxPackages;
