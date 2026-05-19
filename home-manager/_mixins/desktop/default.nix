@@ -93,6 +93,13 @@ in
           opacity = 1.0;
           blur = false;
         };
+      } // lib.optionalAttrs isDarwin {
+        terminal = {
+          shell = {
+            program = "/run/current-system/sw/bin/fish";
+            args = [ "-l" ];
+          };
+        };
       };
     };
     foot = lib.mkIf isLinux {
