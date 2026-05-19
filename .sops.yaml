@@ -22,6 +22,8 @@ keys:
   - &admin_blackchungus age14nq7kta2g4ugccm444srcc25qdtaelp47qwl45uayj3675803cws7j4rar
   - &user_workhorse age1f823k5zataz9f5drq5qnpj4ah0jwsghxalf5gvvwnn0mdgsg8sqqsmqt2w
   - &admin_workhorse age1esc733a49rl960gv8nk67r9vl4tk8nmh3jjuneypmfpxhah65czss2phlu
+  - &user_dorado   age1rulyg6zhl2unzs987m9l5szs08wzc0jc0lwd4ez09vam99hmeueq65v0yz
+  - &admin_dorado age1wp9ra2utsq2q2wc9l32u7yd6adkslkfspg6m4nusa64qclymtqgqpayqev
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
