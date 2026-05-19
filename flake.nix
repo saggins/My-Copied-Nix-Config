@@ -36,7 +36,12 @@
     vscode-server.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
-    { self, nix-darwin, nixpkgs, ... }@inputs:
+    {
+      self,
+      nix-darwin,
+      nixpkgs,
+      ...
+    }@inputs:
     let
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
@@ -63,18 +68,24 @@
           username = "nixos";
           desktop = "pantheon";
         };
-	#saggins
-	"sangmin@blackchungus" = helper.mkHome {
-	  hostname = "blackchungus";
-	  username= "sangmin";
-	  desktop = "hyprland";
-	};
+        #saggins
+        "sangmin@blackchungus" = helper.mkHome {
+          hostname = "blackchungus";
+          username = "sangmin";
+          desktop = "hyprland";
+        };
 
-	#saggins
-	"sangmin@workhorse" = helper.mkHome {
-	  hostname = "workhorse";
-	  username= "sangmin";
-	};
+        #saggins
+        "sangmin@workhorse" = helper.mkHome {
+          hostname = "workhorse";
+          username = "sangmin";
+        };
+        "sangmin@dorado" = helper.mkHome {
+          hostname = "dorado";
+          username = "sangmin";
+          platform = "aarch64-darwin";
+          desktop = "aqua";
+        };
         # Workstations
         "martin@phasma" = helper.mkHome {
           hostname = "phasma";
@@ -152,15 +163,15 @@
         #  - sudo nixos-rebuild switch --flake $HOME/Zero/nix-config
         #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
         #  - nix run github:nix-community/nixos-anywhere -- --flake '.#{hostname}' root@{ip-address}
-	blackchungus = helper.mkNixos {
-	  hostname="blackchungus";
-	  desktop="hyprland";
-	  username="sangmin";
-	};
-	workhorse = helper.mkNixos {
-	  hostname="workhorse";
-	  username="sangmin";
-	};
+        blackchungus = helper.mkNixos {
+          hostname = "blackchungus";
+          desktop = "hyprland";
+          username = "sangmin";
+        };
+        workhorse = helper.mkNixos {
+          hostname = "workhorse";
+          username = "sangmin";
+        };
         phasma = helper.mkNixos {
           hostname = "phasma";
           desktop = "hyprland";
@@ -198,12 +209,10 @@
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config
       #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel
       darwinConfigurations = {
-        momin = helper.mkDarwin {
-          hostname = "momin";
-        };
-        krall = helper.mkDarwin {
-          hostname = "krall";
-          platform = "x86_64-darwin";
+        dorado = helper.mkDarwin {
+          hostname = "dorado";
+          platform = "aarch64-darwin";
+          username = "sangmin";
         };
       };
       # Custom packages and modifications, exported as overlays
@@ -211,14 +220,17 @@
       # Custom NixOS modules
       nixosModules = import ./modules/nixos;
       # Custom packages; acessible via 'nix build', 'nix shell', etc
-      packages = helper.forAllSystems (system:
+      packages = helper.forAllSystems (
+        system:
         let
           # Import nixpkgs for the target system, applying overlays directly
           pkgsWithOverlays = import nixpkgs {
-             inherit system;
-             config = { allowUnfree = true; }; # Ensure consistent config
-             # Pass the list of overlay functions directly
-             overlays = builtins.attrValues self.overlays;
+            inherit system;
+            config = {
+              allowUnfree = true;
+            }; # Ensure consistent config
+            # Pass the list of overlay functions directly
+            overlays = builtins.attrValues self.overlays;
           };
           # Import the function from pkgs/default.nix
           pkgsFunction = import ./pkgs;
@@ -230,7 +242,6 @@
       );
       # Formatter for .nix files, available via 'nix fmt'
       formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
-      
       # Expose input packages directly
       inherit (inputs) bzmenu iwmenu;
     };

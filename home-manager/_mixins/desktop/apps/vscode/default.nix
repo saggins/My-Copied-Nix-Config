@@ -30,6 +30,8 @@ lib.mkIf (lib.elem username installFor) {
     stylua
 
     clang-tools
+  ]
+  ++ lib.optionals isLinux [
     libgcc.lib
   ];
 
@@ -121,5 +123,4 @@ lib.mkIf (lib.elem username installFor) {
       package = pkgs.unstable.vscode;
     };
   };
-  services.vscode-server.enable = true;
 }

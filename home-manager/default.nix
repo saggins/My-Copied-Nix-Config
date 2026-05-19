@@ -6,12 +6,14 @@
   lib,
   outputs,
   pkgs,
+  platform,
   stateVersion,
   username,
   ...
 }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
+  platformIsLinux = lib.hasSuffix "linux" platform;
 in
 {
   imports = [
@@ -22,8 +24,10 @@ in
     inputs.catppuccin.homeModules.catppuccin
     inputs.sops-nix.homeManagerModules.sops
     inputs.nix-index-database.homeModules.nix-index
-    inputs.vscode-server.nixosModules.home
     ./_mixins/features
+  ]
+  ++ lib.optional platformIsLinux inputs.vscode-server.nixosModules.home
+  ++ [
     ./_mixins/scripts
     ./_mixins/services
     ./_mixins/users
@@ -35,9 +39,8 @@ in
     accent = "blue";
     flavor = "mocha";
     bat.enable = config.programs.bat.enable;
-    bottom.enable = config.programs.bottom.enable;
     btop.enable = config.programs.btop.enable;
-    cava.enable = config.programs.cava.enable;
+    cava.enable = isLinux && config.programs.cava.enable;
     fish.enable = config.programs.fish.enable;
     fzf.enable = config.programs.fzf.enable;
     micro.enable = config.programs.micro.enable;
@@ -201,26 +204,7 @@ in
         style = "plain";
       };
     };
-    bottom = {
-      enable = true;
-      settings = {
-        disk_filter = {
-          is_list_ignored = true;
-          list = [ "/dev/loop" ];
-          regex = true;
-          case_sensitive = false;
-          whole_word = false;
-        };
-        flags = {
-          dot_marker = false;
-          enable_gpu_memory = true;
-          group_processes = true;
-          hide_table_gap = true;
-          mem_as_value = true;
-          tree = true;
-        };
-      };
-    };
+    bottom.enable = false;
     btop = {
       enable = true;
       package = pkgs.btop.override {
@@ -271,7 +255,6 @@ in
         neofetch = "${pkgs.fastfetch}/bin/fastfetch";
         glow = "${pkgs.frogmouth}/bin/frogmouth";
         hr = ''${pkgs.hr}/bin/hr "─━"'';
-        htop = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker";
         ip = lib.mkIf isLinux "${pkgs.iproute2}/bin/ip --color --brief";
         less = "${pkgs.bat}/bin/bat";
         lm = "${pkgs.lima-bin}/bin/limactl";
@@ -284,7 +267,7 @@ in
         screenfetch = "${pkgs.fastfetch}/bin/fastfetch";
         speedtest = "${pkgs.speedtest-go}/bin/speedtest-go";
         store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
-        top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
+        top = "${pkgs.btop}/bin/btop";
         tree = "${pkgs.eza}/bin/eza --tree";
         wormhole = "${pkgs.wormhole-rs}/bin/wormhole-rs";
         weather = "${lib.getExe pkgs.girouette} --quiet";
