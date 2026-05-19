@@ -32,3 +32,5 @@ creation_rules:
       - *admin_blackchungus
       - *user_workhorse
       - *admin_workhorse
+      - *user_dorado
+      - *admin_dorado
