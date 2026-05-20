@@ -28,6 +28,7 @@
   environment = {
     shells = [ pkgs.fish ];
     systemPackages = with pkgs; [
+      age-plugin-yubikey
       git
       m-cli
       mas

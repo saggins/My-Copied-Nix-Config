@@ -162,6 +162,7 @@ in
       MANROFFOPT = "-c";
       MICRO_TRUECOLOR = "1";
       PAGER = "bat";
+      SOPS_AGE_KEY_FILE = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
       SUDO_EDITOR = "vim";
       SYSTEMD_EDITOR = "vim";
       VISUAL = "vim";
