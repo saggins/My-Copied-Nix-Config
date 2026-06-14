@@ -19,7 +19,7 @@
         fira
         font-awesome
         liberation_ttf
-        noto-fonts-emoji
+        noto-fonts-color-emoji
         noto-fonts-monochrome-emoji
         source-serif
         symbola
@@ -41,7 +41,7 @@
         mocha-mattari-font
         poppins-font
         spaceport-2006-font
-        ubuntu_font_family
+        ubuntu-classic
         unscii
         zx-spectrum-7-font
       ];

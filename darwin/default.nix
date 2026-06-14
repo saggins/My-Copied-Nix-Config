@@ -40,6 +40,7 @@
 
     variables = {
       EDITOR = "vim";
+      MANPAGER = "less -R";
       SYSTEMD_EDITOR = "vim";
       VISUAL = "vim";
     };
