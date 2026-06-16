@@ -12,7 +12,7 @@
     ./disks.nix
   ];
   hardware.nvidia.nvidiaSettings = lib.mkForce true;
-  services.logind.lidSwitch="ignore";
+  services.logind.settings.Login.HandleLidSwitch = "ignore";
 
   boot = {
     initrd.availableKernelModules = [
