@@ -1,9 +1,6 @@
 # Custom packages, that can be defined similarly to ones from nixpkgs
 # You can build them using 'nix build .#example'
 pkgs: {
-  #waiting for PR to go through, temporary
-  actual-server-updated = pkgs.callPackage ./actual-server { };
-
   # Local packages being prepped for upstreaming
   cider = pkgs.callPackage ./cider { };
   davinci-resolve = pkgs.callPackage ./davinci-resolve { };
