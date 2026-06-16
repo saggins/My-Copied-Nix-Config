@@ -12,7 +12,7 @@ let
   isThinkpad = hostname == "tanis" || hostname == "sidious" || hostname == "shaa" || hostname == "atrius";
   usePowerProfiles =
     config.programs.hyprland.enable
-    || config.services.xserver.desktopManager.pantheon.enable;
+    || config.services.desktopManager.pantheon.enable;
 in
 lib.mkIf isInstall {
   # Power Management strategy:
