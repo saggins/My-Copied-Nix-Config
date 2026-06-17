@@ -241,7 +241,7 @@
         customPkgs
       );
       # Formatter for .nix files, available via 'nix fmt'
-      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
       # Expose input packages directly
       inherit (inputs) bzmenu iwmenu;
     };

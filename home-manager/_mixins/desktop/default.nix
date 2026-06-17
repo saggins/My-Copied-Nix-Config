@@ -26,14 +26,16 @@ in
     alacritty.enable = config.programs.alacritty.enable && isLinux;
     foot.enable = config.programs.foot.enable;
     fuzzel.enable = config.programs.fuzzel.enable;
-    hyprland.enable = config.wayland.windowManager.hyprland.enable;
+    # Disabled: the port emits a lua-inline color theme that requires configType = "lua",
+    # but we use "hyprlang" (see hyprland mixin). Border colors are hardcoded there instead.
+    hyprland.enable = false;
     waybar.enable = config.programs.waybar.enable;
     obs.enable = config.programs.obs-studio.enable;
   };
 
   # Authrorize X11 access in Distrobox
   home.file = lib.mkIf isLinux {
-    ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
+    ".distroboxrc".text = ''${pkgs.xhost}/bin/xhost +si:localuser:$USER'';
   };
 
   programs = lib.mkIf (username == "sangmin") {

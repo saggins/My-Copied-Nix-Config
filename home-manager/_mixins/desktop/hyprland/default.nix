@@ -50,6 +50,11 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
+    # Keep hyprlang config format (26.05 changed the default to "lua"): our config uses
+    # Hyprland variables ($mod) and hyphenated keywords (exec-once) that the lua backend
+    # does not translate. The Catppuccin Hyprland port (which needs lua) is disabled in
+    # the desktop mixin; our border colors are hardcoded below.
+    configType = "hyprlang";
     settings = {
       inherit (monitors) monitor workspace;
       "$mod" = "SUPER";

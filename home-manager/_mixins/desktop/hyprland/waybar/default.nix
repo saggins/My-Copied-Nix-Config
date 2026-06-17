@@ -42,7 +42,7 @@ let
   rofiAppGrid = pkgs.writeShellApplication {
     name = "rofi-appgrid";
     runtimeInputs = with pkgs; [
-      rofi-wayland
+      rofi
     ];
     text = ''rofi -show drun -theme "${config.xdg.configHome}/rofi/launchers/rofi-appgrid/style.rasi"
     '';
@@ -594,7 +594,7 @@ in
       ];
       systemd = {
         enable = true;
-        target = "hyprland-session.target";
+        targets = [ "hyprland-session.target" ];
       };
     };
   };

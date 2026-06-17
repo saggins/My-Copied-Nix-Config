@@ -58,6 +58,8 @@ lib.mkIf isLinux {
       };
     };
     gtk4 = {
+      # Keep legacy behavior (stateVersion < 26.05): theme applies to GTK4 apps.
+      theme = config.gtk.theme;
       extraConfig = {
         gtk-decoration-layout = "${buttonLayout}";
       };

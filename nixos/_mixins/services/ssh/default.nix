@@ -15,6 +15,9 @@ in
     ssh.startAgent = true;
   };
   services = {
+    # 26.05 enables gcr-ssh-agent by default with GNOME components; it conflicts
+    # with programs.ssh.startAgent, so disable it in favour of the OpenSSH agent.
+    gnome.gcr-ssh-agent.enable = false;
     openssh = {
       enable = true;
       openFirewall = true;

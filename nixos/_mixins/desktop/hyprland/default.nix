@@ -105,6 +105,7 @@ in
         # Enable HEIC image previews in Nautilus
         libheif
         libheif.out
+        file-roller
         nautilus
         polkit_gnome
         resources
@@ -148,7 +149,6 @@ in
         };
       }
     ];
-    file-roller.enable = isInstall;
     gnome-disks.enable = isInstall;
     hyprland = {
       enable = true;

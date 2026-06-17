@@ -36,6 +36,10 @@ in
 
   # Enable the Catppuccin theme
   catppuccin = {
+    # Preserve current behavior: ports are enabled individually below, no auto-enrollment.
+    # (autoEnable matches the previous `enable` value; `enable` is now the global toggle.)
+    enable = true;
+    autoEnable = false;
     accent = "blue";
     flavor = "mocha";
     bat.enable = config.programs.bat.enable;
@@ -84,11 +88,11 @@ in
         croc # Terminal file transfer
         cyme # Modern Unix `lsusb`
         dconf2nix # Nix code from Dconf files
-        dogdns # Modern Unix `dig`
+        doggo # Modern Unix `dig`
         dotacat # Modern Unix lolcat
         dua # Modern Unix `du`
         duf # Modern Unix `df`
-        du-dust # Modern Unix `du`
+        dust # Modern Unix `du`
         entr # Modern Unix `watch`
         fastfetch # Modern Unix system info
         fd # Modern Unix `find`
@@ -107,7 +111,7 @@ in
         jpegoptim # Terminal JPEG optimizer
         jiq # Modern Unix `jq`
         lastpass-cli # Terminal LastPass client
-        lima-bin # Terminal VM manager
+        lima # Terminal VM manager
         magic-wormhole-rs # Terminal file transfer
         marp-cli # Terminal Markdown presenter
         mprocs # Terminal parallel process runner
@@ -258,7 +262,7 @@ in
         hr = ''${pkgs.hr}/bin/hr "─━"'';
         ip = lib.mkIf isLinux "${pkgs.iproute2}/bin/ip --color --brief";
         less = "${pkgs.bat}/bin/bat";
-        lm = "${pkgs.lima-bin}/bin/limactl";
+        lm = "${pkgs.lima}/bin/limactl";
         lolcat = "${pkgs.dotacat}/bin/dotacat";
         lsusb = "${pkgs.cyme}/bin/cyme --headings";
         moon = "${pkgs.curlMinimal}/bin/curl -s wttr.in/Moon";
@@ -691,6 +695,8 @@ in
     tmate.enable = true;
     yazi = {
       enable = true;
+      # Keep legacy wrapper name (stateVersion < 26.05 default changed "yy" -> "y").
+      shellWrapperName = "yy";
       enableBashIntegration = true;
       enableFishIntegration = true;
       enableZshIntegration = true;
@@ -774,8 +780,10 @@ in
       # Do not create XDG directories for LIMA; it is confusing
       enable = isLinux && !isLima;
       createDirectories = lib.mkDefault true;
+      # Keep legacy behavior (stateVersion < 26.05 default changed true -> false).
+      setSessionVariables = true;
       extraConfig = {
-        XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/Screenshots";
+        SCREENSHOTS = "${config.home.homeDirectory}/Pictures/Screenshots";
       };
     };
   };

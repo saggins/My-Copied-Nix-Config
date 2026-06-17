@@ -23,8 +23,8 @@ lib.mkIf (lib.elem username installFor) {
     luajit
     lua-language-server
     nil
-    nixfmt-rfc-style
-    nodePackages.prettier
+    nixfmt
+    prettier
     shellcheck
     shfmt
     stylua

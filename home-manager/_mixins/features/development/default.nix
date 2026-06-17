@@ -40,7 +40,6 @@
       enable = true;
       # TODO: Package https://github.com/DevAtDawn/gh-fish
       extensions = with pkgs; [
-        gh-copilot
         gh-dash
         gh-markdown-preview
         gh-notify
@@ -53,21 +52,17 @@
     };
     git = {
       enable = true;
-      aliases = {
-        ci = "commit";
-        cl = "clone";
-        co = "checkout";
-        purr = "pull --rebase";
-        dlog = "!f() { GIT_EXTERNAL_DIFF=difft git log -p --ext-diff $@; }; f";
-        dshow = "!f() { GIT_EXTERNAL_DIFF=difft git show --ext-diff $@; }; f";
-        fucked = "reset --hard";
-        graph = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
-      };
-      difftastic = {
-        display = "side-by-side-show-both";
-        enable = true;
-      };
-      extraConfig = {
+      settings = {
+        alias = {
+          ci = "commit";
+          cl = "clone";
+          co = "checkout";
+          purr = "pull --rebase";
+          dlog = "!f() { GIT_EXTERNAL_DIFF=difft git log -p --ext-diff $@; }; f";
+          dshow = "!f() { GIT_EXTERNAL_DIFF=difft git show --ext-diff $@; }; f";
+          fucked = "reset --hard";
+          graph = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
+        };
         advice = {
           statusHints = false;
         };
@@ -100,6 +95,11 @@
         "dist/"
         "result"
       ];
+    };
+    difftastic = {
+      enable = true;
+      git.enable = true;
+      options.display = "side-by-side-show-both";
     };
     gitui = {
       enable = true;

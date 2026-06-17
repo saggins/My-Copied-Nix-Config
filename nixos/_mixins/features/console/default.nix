@@ -62,6 +62,9 @@ in
   };
 
   catppuccin = {
+    # Preserve current behavior: ports enabled individually, no auto-enrollment.
+    enable = true;
+    autoEnable = false;
     accent = "blue";
     flavor = "mocha";
   };
