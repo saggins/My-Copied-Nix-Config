@@ -24,6 +24,10 @@
       "uas"
       "sd_mod"
     ];
+    # bcachefs is out-of-tree on the 6.18 kernel; pull its module into the
+    # initrd so stage-1 can open the bcachefs root.
+    extraModulePackages = [ config.boot.kernelPackages.bcachefs ];
+    initrd.supportedFilesystems = [ "bcachefs" ];
     #    loader = {
     #      systemd-boot.enable = lib.mkForce false;
     #      grub = {
