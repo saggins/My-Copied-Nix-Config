@@ -1,6 +1,7 @@
 {
   config,
   hostname,
+  inputs,
   lib,
   pkgs,
   username,
@@ -9,6 +10,7 @@
 let
   xkbLayout = "us";
   monitors = (import ./monitors.nix { }).${hostname};
+  hyprlandPkgs = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   home.packages = with pkgs; [
@@ -50,6 +52,8 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
+    package = hyprlandPkgs.hyprland;
+    portalPackage = hyprlandPkgs.xdg-desktop-portal-hyprland;
     settings = {
       inherit (monitors) monitor workspace;
       "$mod" = "SUPER";
@@ -318,7 +322,7 @@ in
     extraPortals = [
       pkgs.xdg-desktop-portal
       pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal-hyprland
+      hyprlandPkgs.xdg-desktop-portal-hyprland
     ];
     xdgOpenUsePortal = true;
   };
