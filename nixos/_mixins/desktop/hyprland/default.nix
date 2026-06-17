@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   isInstall,
   lib,
   pkgs,
@@ -7,6 +8,7 @@
   ...
 }:
 let
+  hyprlandPkgs = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
   dbusService = if config.services.dbus.implementation == "broker"
     then "dbus-broker.service"
     else "dbus.service";
@@ -153,6 +155,8 @@ in
     hyprland = {
       enable = true;
       systemd.setPath.enable = true;
+      package = hyprlandPkgs.hyprland;
+      portalPackage = hyprlandPkgs.xdg-desktop-portal-hyprland;
     };
     iio-hyprland = {
       enable = true;

@@ -1,6 +1,7 @@
 {
   config,
   hostname,
+  inputs,
   lib,
   pkgs,
   username,
@@ -9,6 +10,7 @@
 let
   xkbLayout = "us";
   monitors = (import ./monitors.nix { }).${hostname};
+  hyprlandPkgs = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   home.packages = with pkgs; [
@@ -50,11 +52,8 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
-    # Keep hyprlang config format (26.05 changed the default to "lua"): our config uses
-    # Hyprland variables ($mod) and hyphenated keywords (exec-once) that the lua backend
-    # does not translate. The Catppuccin Hyprland port (which needs lua) is disabled in
-    # the desktop mixin; our border colors are hardcoded below.
-    configType = "hyprlang";
+    package = hyprlandPkgs.hyprland;
+    portalPackage = hyprlandPkgs.xdg-desktop-portal-hyprland;
     settings = {
       inherit (monitors) monitor workspace;
       "$mod" = "SUPER";
@@ -323,7 +322,7 @@ in
     extraPortals = [
       pkgs.xdg-desktop-portal
       pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal-hyprland
+      hyprlandPkgs.xdg-desktop-portal-hyprland
     ];
     xdgOpenUsePortal = true;
   };

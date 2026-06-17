@@ -9,6 +9,9 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nix-darwin.url = "github:LnL7/nix-darwin/nix-darwin-26.05";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    # Pinned to the 0.54 series to stay on the pre-Lua config format.
+    # Intentionally NOT following nixpkgs so the hyprland.cachix.org binaries match.
+    hyprland.url = "github:hyprwm/Hyprland/v0.54.3";
 
     bzmenu.url = "https://github.com/e-tho/bzmenu/archive/refs/tags/v0.2.1.tar.gz";
     bzmenu.inputs.nixpkgs.follows = "nixpkgs";
