@@ -1,5 +1,6 @@
 {
   config,
+  hostname,
   isInstall,
   isWorkstation,
   lib,
@@ -14,6 +15,12 @@ let
     "i915"
     "xe"
   ];
+  # Intel GPUs older than Gen12 (e.g. Kaby Lake) need the legacy compute
+  # runtime, which nixos-hardware already provides on those machines. Adding the
+  # current intel-compute-runtime too makes hardware.graphics.extraPackages
+  # collide on ocloc_api.h, so skip it for these hosts.
+  intelLegacyHosts = [ "workhorse" ];
+  useIntelCurrentRuntime = hasIntelGPU && !(lib.elem hostname intelLegacyHosts);
 in
 lib.mkIf isInstall {
 
@@ -54,7 +61,7 @@ lib.mkIf isInstall {
     graphics = {
       enable = true;
       enable32Bit = lib.mkForce isInstall;
-      extraPackages = with pkgs; lib.optionals hasIntelGPU [ intel-compute-runtime ];
+      extraPackages = with pkgs; lib.optionals useIntelCurrentRuntime [ intel-compute-runtime ];
     };
     nvidia = lib.mkIf hasNvidiaGPU {
       nvidiaSettings = lib.mkDefault isWorkstation;
