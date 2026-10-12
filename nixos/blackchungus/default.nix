@@ -28,26 +28,28 @@
     # initrd so stage-1 can open the bcachefs root.
     extraModulePackages = [ config.boot.kernelPackages.bcachefs ];
     initrd.supportedFilesystems = [ "bcachefs" ];
-    #    loader = {
-    #      systemd-boot.enable = lib.mkForce false;
-    #      grub = {
-    #      devices = ["nodev"];
-    #      enable=true;
-    #      extraEntriesBeforeNixOS=true;
-    #      extraEntries = ''
-    #      menuentry "Windows" {
-    #        insmod part_gpt
-    #        insmod fat
-    #        insmod search_fs_uuid
-    #        insmod chain
-    #        search --fs-uuid --set=root $FS_UUID
-    #        chainloader /EFI/Microsoft/Boot/bootmgfw.efi
-    #      }
-    #    '';
-    #      };
-    #    };
-    loader.grub.extraConfig = ''
-            # Look for hardware switch device by its hard-coded filesystem ID
+    # GRUB instead of systemd-boot: the hardware boot switch needs GRUB scripting
+    loader = {
+      systemd-boot.enable = lib.mkForce false;
+      grub = {
+        enable = true;
+        efiSupport = true;
+        device = "nodev";
+        configurationLimit = 10;
+        # Windows must be entry 0 and NixOS entry 1 for the switch logic below
+        extraEntriesBeforeNixOS = true;
+        extraEntries = ''
+          menuentry "Windows" {
+            insmod part_gpt
+            insmod fat
+            insmod search_fs_file
+            insmod chain
+            search --no-floppy --file --set=root /EFI/Microsoft/Boot/bootmgfw.efi
+            chainloader /EFI/Microsoft/Boot/bootmgfw.efi
+          }
+        '';
+        extraConfig = ''
+          # Look for hardware switch device by its hard-coded filesystem ID
           search --no-floppy --fs-uuid --set hdswitch 0000-1234
 
           # If found, read dynamic config file and select appropriate entry for each position
@@ -55,16 +57,16 @@
             source (''${hdswitch})/switch_position_grub.cfg
 
             if [ "''${os_hw_switch}" == 0 ] ; then
-      	# Boot Linux
-      	set default="1"
+              # Boot Linux
+              set default="1"
             elif [ "''${os_hw_switch}" == 1 ] ; then
-      	# Boot Windows
-      	set default="0"
+              # Boot Windows
+              set default="0"
             fi
           fi
-
-
-    '';
+        '';
+      };
+    };
     kernelModules = [
       "amdgpu"
       "kvm-amd"
