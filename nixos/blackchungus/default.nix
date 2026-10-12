@@ -37,7 +37,7 @@
         efiSupport = true;
         device = "nodev";
         configurationLimit = 10;
-        # Windows must be entry 0 and NixOS entry 1 for the switch logic below
+        # Windows must be entry 0, firmware setup 1 and NixOS 2 for the switch logic below
         extraEntriesBeforeNixOS = true;
         extraEntries = ''
           menuentry "Windows" {
@@ -47,6 +47,9 @@
             insmod chain
             search --no-floppy --file --set=root /EFI/Microsoft/Boot/bootmgfw.efi
             chainloader /EFI/Microsoft/Boot/bootmgfw.efi
+          }
+          menuentry "UEFI Firmware Settings" --class efi {
+            fwsetup
           }
         '';
         extraConfig = ''
@@ -59,7 +62,7 @@
 
             if [ "''${os_hw_switch}" == 0 ] ; then
               # Boot Linux
-              set default="1"
+              set default="2"
             elif [ "''${os_hw_switch}" == 1 ] ; then
               # Boot Windows
               set default="0"
