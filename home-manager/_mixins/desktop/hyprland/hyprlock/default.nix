@@ -236,19 +236,12 @@ in
           }
           {
             timeout = 305;
-            on-timeout = "hyprctl dispatch dpms off";
-            on-resume = "hyprctl dispatch dpms on";
+            on-timeout = "hyprctl dispatch 'hl.dsp.dpms({ action = \"off\" })'";
+            on-resume = "hyprctl dispatch 'hl.dsp.dpms({ action = \"on\" })'";
           }
         ];
       };
     };
   };
-  wayland.windowManager.hyprland = {
-    settings = {
-      bind = [
-        "$mod, L, exec, ${lib.getExe pkgs.hyprlock} --immediate"
-        "CTRL ALT, L, exec, ${lib.getExe pkgs.hyprlock} --immediate"
-      ];
-    };
-  };
+  # Lock keybinds live in ../default.nix
 }

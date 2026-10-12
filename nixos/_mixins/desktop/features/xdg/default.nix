@@ -9,7 +9,10 @@
         pkgs.hyprland
       ];
       extraPortals = lib.optionals (desktop == "hyprland") [
-        pkgs.xdg-desktop-portal-hyprland
+        # NOTE: xdg-desktop-portal-hyprland is added automatically by
+        # programs.hyprland (via its portalPackage). Adding it here too would
+        # pull in a second, different build of the same portal and cause a
+        # duplicate xdg-desktop-portal-hyprland.service user unit.
         pkgs.xdg-desktop-portal-gtk
       ] ++ lib.optionals (desktop == "pantheon") [
         pkgs.pantheon.xdg-desktop-portal-pantheon

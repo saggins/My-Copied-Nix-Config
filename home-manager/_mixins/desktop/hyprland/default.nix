@@ -4,13 +4,19 @@
   inputs,
   lib,
   pkgs,
-  username,
   ...
 }:
 let
-  xkbLayout = "us";
-  monitors = (import ./monitors.nix { }).${hostname};
   hyprlandPkgs = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
+  hostMonitors = import ./monitors.nix { inherit lib; };
+  layout = hostMonitors.${hostname} or hostMonitors.default;
+  toLua = lib.generators.toLua { multiline = false; };
+
+  hyprlock = lib.getExe pkgs.hyprlock;
+  hyprshot = lib.getExe pkgs.hyprshot;
+  satty = lib.getExe pkgs.satty;
+  playerctl = lib.getExe pkgs.playerctl;
+  swaync-client = "${pkgs.swaynotificationcenter}/bin/swaync-client";
 in
 {
   home.packages = with pkgs; [
@@ -52,258 +58,197 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
+    # Hyprland >= 0.55 is configured with Lua (~/.config/hypr/hyprland.lua).
+    # https://wiki.hypr.land/Configuring/Start/
+    configType = "lua";
     package = hyprlandPkgs.hyprland;
     portalPackage = hyprlandPkgs.xdg-desktop-portal-hyprland;
-    settings = {
-      inherit (monitors) monitor workspace;
-      "$mod" = "SUPER";
-      # Work when input inhibitor (l) is active.
-      bindl = [
-        ", XF86AudioPlay, exec, ${lib.getExe pkgs.playerctl} play-pause"
-        ", XF86AudioPrev, exec, ${lib.getExe pkgs.playerctl} previous"
-        ", XF86AudioNext, exec, ${lib.getExe pkgs.playerctl} next"
-      ];
-      # https://en.wikipedia.org/wiki/Table_of_keyboard_shortcuts
-      bindm = [
-        # Move windows with AltGr + LMB (for lefties) and $mod + LMB
-        "$mod, mouse:272, movewindow"
-        "Mod5, mouse:272, movewindow"
-      ];
-      bind = [
-        # Process management
-        "$mod, Q, killactive"
-        # Launch applications
-        "$mod, E, exec, nautilus --new-window"
-        "$mod, T, exec, foot"
-        # Move focus
-        "ALT, Tab, cyclenext"
-        "ALT, Tab, bringactivetotop"
-        "ALT SHIFT, Tab, cyclenext, prev"
-        "ALT SHIFT, Tab, bringactivetotop"
-        # Move focus with SHIFT + arrow keys
-        "ALT, left, movefocus, l"
-        "ALT, right, movefocus, r"
-        "ALT, up, movefocus, u"
-        "ALT, down, movefocus, d"
-        "ALT $mod, left, swapwindow, l"
-        "ALT $mod, right, swapwindow, r"
-        "ALT $mod, up, swapwindow, u"
-        "ALT $mod, down, swapwindow, d"
-        "$mod, up, fullscreen, 1"
-        "$mod, down, togglefloating"
-        "$mod, P, pseudo"
-        # Switch workspace
-        "CTRL ALT, left, workspace, e-1"
-        "CTRL ALT, right, workspace, e+1"
-        "CTRL ALT, 1, workspace, 1"
-        "$mod ALT, 1, movetoworkspace, 1"
-        "CTRL ALT, 2, workspace, 2"
-        "$mod ALT, 2, movetoworkspace, 2"
-        "CTRL ALT, 3, workspace, 3"
-        "$mod ALT, 3, movetoworkspace, 3"
-        "CTRL ALT, 4, workspace, 4"
-        "$mod ALT, 4, movetoworkspace, 4"
-        "CTRL ALT, 5, workspace, 5"
-        "$mod ALT, 5, movetoworkspace, 5"
-        "CTRL ALT, 6, workspace, 6"
-        "$mod ALT, 6, movetoworkspace, 6"
-        "CTRL ALT, 7, workspace, 7"
-        "$mod ALT, 7, movetoworkspace, 7"
-        "CTRL ALT, 8, workspace, 8"
-        "$mod ALT, 8, movetoworkspace, 8"
-        "CTRL ALT, 9, workspace, 9"
-        "$mod ALT, 9, movetoworkspace, 9"
-      ];
-      # https://wiki.hyprland.org/Configuring/Variables/#animations
-      animations = {
-        enabled = true;
-        first_launch_animation = true;
-      };
-      # https://wiki.hyprland.org/Configuring/Animations/
-      animation = [
-        "windows, 1, 6, wind, slide"
-        "windowsIn, 1, 6, winIn, slide"
-        "windowsOut, 1, 5, winOut, slide"
-        "windowsMove, 1, 5, wind, slide"
-        "border, 1, 10, liner"
-        "borderangle, 1, 100, linear, loop"
-        "fade, 1, 10, default"
-        "workspaces, 1, 5, wind"
-      ];
-      bezier = [
-        "wind, 0.05, 0.9, 0.1, 1.05"
-        "winIn, 0.1, 1.1, 0.1, 1.1"
-        "winOut, 0.3, -0.3, 0, 1"
-        "liner, 1, 1, 1, 1"
-        "linear, 0.0, 0.0, 1.0, 1.0"
-      ];
-      decoration = {
-        rounding = 8;
-        active_opacity = 1.0;
-        inactive_opacity = 1.0;
-        fullscreen_opacity = 1.0;
-        dim_inactive = true;
-        dim_strength = 0.025;
-        shadow = {
-          # Subtle shadows
-          color = "rgba(11111baf)";
-          color_inactive = "rgba(1e1e2eaf)";
-          enabled = true;
-          range = 304;
-          render_power = 4;
-          offset = "0, 42";
-          scale = 0.9;
-        };
-        blur = {
-          enabled = true;
-          passes = 2;
-          size = 6;
-          ignore_opacity = true;
-        };
-      };
-      exec-once = [
-        "hypr-session start"
-      ];
-      general = {
-        gaps_in = 5;
-        gaps_out = 5;
-        border_size = 2;
-        # https://wiki.hyprland.org/Configuring/Variables/#variable-types for info about colors
-        "col.active_border" =
-          "rgb(cba6f7) rgb(f38ba8) rgb(eba0ac) rgb(fab387) rgb(f9e2af) rgb(a6e3a1) rgb(94e2d5) rgb(89dceb) rgb(89b4fa) rgb(b4befe) 270deg";
-        "col.inactive_border" = "rgb(45475a) rgb(313244) rgb(45475a) rgb(313244) 270deg";
-        resize_on_border = true;
-        extend_border_grab_area = 10;
-        layout = "dwindle";
-      };
-      #https://wiki.hyprland.org/Configuring/Master-Layout/
-      master = {
-        mfact = if hostname == "phasma" then 0.5 else 0.55;
-        orientation = if hostname == "phasma" then "center" else "left";
-      };
-      # https://wiki.hyprland.org/Configuring/Dwindle-Layout/
-      dwindle = {
-        preserve_split = true;
-      };
-      gestures = {
-        workspace_swipe = true;
-        workspace_swipe_forever = false;
-      };
-      group = {
-        groupbar = {
-          font_family = "Work Sans";
-          font_size = 12;
-          gradients = true;
-        };
-      };
-      input = {
-        follow_mouse = 2;
-        kb_layout = xkbLayout;
-        repeat_rate = 30;
-        repeat_delay = 300;
-        touchpad = {
-          clickfinger_behavior = true;
-          middle_button_emulation = true;
-          natural_scroll = true;
-          tap-to-click = true;
-        };
-      };
-      misc = {
-        animate_manual_resizes = false;
-        background_color = "rgb(30, 30, 46)";
-        disable_hyprland_logo = true;
-        disable_splash_rendering = true;
-        focus_on_activate = true;
-        key_press_enables_dpms = true;
-        mouse_move_enables_dpms = true;
-        vfr = true;
-      };
-      plugin = {
-        hyprtrails = {
-          color = "rgba(a6e3a1aa)";
-          bezier_step = 0.025; # 0.025
-          points_per_step = 2; # 2
-          history_points = 12; # 20
-          history_step = 2; # 2
-        };
-      };
-      windowrulev2 = [
-        # only allow shadows for floating windows
-        "noshadow, floating:0"
-        # make floating windows opaque
-        "opacity 0.72, floating:1"
-        # Some windows should never be opaque
-        "opacity 1.0, class: com.obsproject.Studio"
-        "opacity 1.0, class: resolve"
-        "opacity 1.0, class: com.defold.editor.Start"
-        "opacity 1.0, class: class: dmengine"
-        "opacity 1.0, title: UNIGINE Engine"
-        "opacity 1.0, title: Steam Big Picture Mode"
-        "opacity 1.0, class: Gimp"
-        "opacity 1.0, class: love"
-        "opacity 1.0, title: ^QEMU"
-        "opacity 1.0, class: Safeeyes"
-
-        # make safeeyes full screen
-        "fullscreen, class:(Safeeyes)"
-
-        # make pop-up file dialogs floating, centred, and pinned
-        "float, title:(Open|Progress|Save File)"
-        "center, title:(Open|Progress|Save File)"
-        "pin, title:(Open|Progress|Save File)"
-        "float, class:(xdg-desktop-portal-gtk)"
-        "center, class:(xdg-desktop-portal-gtk)"
-        "pin, class:(xdg-desktop-portal-gtk)"
-        "float, class:^(code)$, initialTitle:not:Visual Studio Code"
-        "center, class:^(code)$, initialTitle:not:Visual Studio Code"
-        "pin, class:^(code)$, initialTitle:not:Visual Studio Code"
-
-        # Apps that should be floating
-        "float, title:(Maestral Settings|MainPicker|overskride|Pipewire Volume Control|Trayscale)"
-        "center, title:(Maestral Settings|MainPicker|overskride|Pipewire Volume Control|Trayscale)"
-        "float, initialTitle:(Polychromatic|Syncthing Tray)"
-        "center, initialTitle:(Polychromatic|Syncthing Tray)"
-        "float, class:(.blueman-manager-wrapped|blueberry.py|nm-connection-editor|org.gnome.Calculator|polkit-gnome-authentication-agent-1)"
-        "center, class:(.blueman-manager-wrapped|blueberry.py|nm-connection-editor|org.gnome.Calculator|polkit-gnome-authentication-agent-1)"
-        "size 700 580, title:(.blueman-manager-wrapped)"
-        "size 580 640, title:(blueberry.py)"
-        "size 600 402, title:(Maestral Settings)"
-        "size 512 290, title:(MainPicker)"
-        "size 395 496, class:(org.gnome.Calculator)"
-        "size 700 500, class:(nm-connection-editor)"
-        "size 1134 880, title:(Pipewire Volume Control)"
-        "size 960 640 initialTitle:(Polychromatic)"
-        "size 880 1010, title:(overskride)"
-        "size 886 960, title:(Trayscale)"
-
-        # Apps for streaming from dummy workspace
-        "float, onworkspace:10"
-        "opacity 1.0 0.6 1.0, onworkspace:10"
-        "size 1596 1076, onworkspace:10"
-        "maxsize 1596 1076, onworkspace:10"
-        "minsize 1596 1076, onworkspace:10"
-        "move 322 2, onworkspace:10"
-        "noshadow, onworkspace:10"
-      ];
-      layerrule = [
-        "blur, launcher" # fuzzel
-        "ignorezero, launcher"
-        "blur, logout_dialog" # wlogout
-        "blur, rofi"
-        "blur, swaync-control-center"
-        "blur, swaync-notification-window"
-        "ignorealpha 0.7, swaync-control-center"
-        "ignorealpha 0.7, swaync-notification-window"
-      ];
-      xwayland = {
-        force_zero_scaling = true;
-      };
-    };
     systemd = {
       enableXdgAutostart = true;
       variables = [ "--all" ];
     };
     xwayland.enable = true;
+    # Written by hand rather than via `settings` so it reads like a normal
+    # hyprland.lua. Other modules may append to this (it is a `lines` option).
+    extraConfig = ''
+      ------------------
+      ---- MONITORS ----
+      ------------------
+      -- https://wiki.hypr.land/Configuring/Basics/Monitors/
+      for _, m in ipairs(${toLua layout.monitors}) do
+          hl.monitor(m)
+      end
+
+      -- https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
+      for _, w in ipairs(${toLua layout.workspaces}) do
+          hl.workspace_rule(w)
+      end
+
+      -------------------
+      ---- AUTOSTART ----
+      -------------------
+      hl.on("hyprland.start", function()
+          hl.exec_cmd("hypr-session start")
+      end)
+
+      -----------------------
+      ---- LOOK AND FEEL ----
+      -----------------------
+      -- https://wiki.hypr.land/Configuring/Basics/Variables/
+      hl.config({
+          general = {
+              gaps_in     = 5,
+              gaps_out    = 5,
+              border_size = 2,
+              col = {
+                  -- Catppuccin Mocha
+                  active_border   = { colors = { "rgb(cba6f7)", "rgb(89b4fa)" }, angle = 45 },
+                  inactive_border = "rgb(45475a)",
+              },
+              resize_on_border = true,
+              layout = "dwindle",
+          },
+
+          decoration = {
+              rounding = 8,
+              shadow = {
+                  enabled      = true,
+                  range        = 4,
+                  render_power = 3,
+                  color        = "rgba(11111baf)",
+              },
+              blur = {
+                  enabled = true,
+                  size    = 3,
+                  passes  = 1,
+              },
+          },
+
+          animations = {
+              enabled = true,
+          },
+
+          dwindle = {
+              preserve_split = true,
+          },
+
+          misc = {
+              background_color         = "rgb(1e1e2e)",
+              disable_hyprland_logo    = true,
+              disable_splash_rendering = true,
+              focus_on_activate        = true,
+          },
+
+          input = {
+              kb_layout    = "us",
+              follow_mouse = 2,
+              repeat_rate  = 30,
+              repeat_delay = 300,
+              touchpad = {
+                  natural_scroll = true,
+              },
+          },
+
+          xwayland = {
+              force_zero_scaling = true,
+          },
+      })
+
+      -- https://wiki.hypr.land/Configuring/Gestures/
+      hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
+
+      ---------------------
+      ---- KEYBINDINGS ----
+      ---------------------
+      -- https://wiki.hypr.land/Configuring/Basics/Binds/
+      local mainMod = "SUPER"
+
+      -- Windows
+      hl.bind(mainMod .. " + Q",    hl.dsp.window.close())
+      hl.bind(mainMod .. " + up",   hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
+      hl.bind(mainMod .. " + down", hl.dsp.window.float({ action = "toggle" }))
+      hl.bind(mainMod .. " + P",    hl.dsp.window.pseudo())
+
+      -- Applications
+      hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("nautilus --new-window"))
+      hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("foot"))
+
+      -- Cycle focus (and raise) with ALT + Tab
+      hl.bind("ALT + Tab",         hl.dsp.window.cycle_next({ next = true }))
+      hl.bind("ALT + Tab",         hl.dsp.window.bring_to_top())
+      hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ next = false }))
+      hl.bind("ALT + SHIFT + Tab", hl.dsp.window.bring_to_top())
+
+      -- Move focus with ALT + arrows, swap windows with ALT + SUPER + arrows
+      for _, dir in ipairs({ "left", "right", "up", "down" }) do
+          hl.bind("ALT + " .. dir,                hl.dsp.focus({ direction = dir }))
+          hl.bind("ALT + " .. mainMod .. " + " .. dir, hl.dsp.window.swap({ direction = dir }))
+      end
+
+      -- Workspaces: CTRL + ALT + [1-9] to switch, SUPER + ALT + [1-9] to move window
+      for i = 1, 9 do
+          hl.bind("CTRL + ALT + " .. i,          hl.dsp.focus({ workspace = i }))
+          hl.bind(mainMod .. " + ALT + " .. i,   hl.dsp.window.move({ workspace = i }))
+      end
+      hl.bind("CTRL + ALT + left",  hl.dsp.focus({ workspace = "e-1" }))
+      hl.bind("CTRL + ALT + right", hl.dsp.focus({ workspace = "e+1" }))
+
+      -- Move windows with SUPER + LMB, or AltGr + LMB (for lefties)
+      hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
+      hl.bind("MOD5 + mouse:272",        hl.dsp.window.drag(), { mouse = true })
+
+      -- Launcher, menus and pickers (fuzzel)
+      hl.bind(mainMod .. " + SUPER_L", hl.dsp.exec_cmd("${pkgs.procps}/bin/pkill fuzzel || fuzzel-launcher"), { release = true })
+      hl.bind(mainMod .. " + SPACE",   hl.dsp.exec_cmd("fuzzel-actions"))
+      hl.bind("CTRL + ALT + SPACE",    hl.dsp.exec_cmd("hypr-activity-menu"))
+      hl.bind("CTRL + ALT + B",        hl.dsp.exec_cmd("fuzzel-bluetooth"))
+      hl.bind("CTRL + ALT + E",        hl.dsp.exec_cmd("fuzzel-emoji"))
+      hl.bind("CTRL + ALT + K",        hl.dsp.exec_cmd("fuzzel-hyprpicker"))
+      hl.bind("CTRL + ALT + P",        hl.dsp.exec_cmd("fuzzel-clipboard"))
+      hl.bind("CTRL + ALT + R",        hl.dsp.exec_cmd("fuzzel-history"))
+      hl.bind("CTRL + ALT + W",        hl.dsp.exec_cmd("fuzzel-wifi"))
+
+      -- Notifications
+      hl.bind("CTRL + ALT + N", hl.dsp.exec_cmd("${swaync-client} --toggle-panel --skip-wait"))
+
+      -- Lock screen
+      hl.bind(mainMod .. " + L",  hl.dsp.exec_cmd("${hyprlock} --immediate"))
+      hl.bind("CTRL + ALT + L",   hl.dsp.exec_cmd("${hyprlock} --immediate"))
+
+      -- Screenshots
+      hl.bind("Print",              hl.dsp.exec_cmd("fuzzel-hyprshot"))
+      hl.bind("ALT + Print",        hl.dsp.exec_cmd("${hyprshot} --mode active --mode window --raw | ${satty} --filename -"))
+      hl.bind("SHIFT + Print",      hl.dsp.exec_cmd("${hyprshot} --mode region --raw | ${satty} --filename -"))
+      hl.bind("CTRL + ALT + Print", hl.dsp.exec_cmd("${hyprshot} --mode active --mode output --raw | ${satty} --filename -"))
+
+      -- Media keys; `locked` keeps them working on the lock screen
+      hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("${playerctl} play-pause"), { locked = true })
+      hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("${playerctl} previous"),   { locked = true })
+      hl.bind("XF86AudioNext", hl.dsp.exec_cmd("${playerctl} next"),       { locked = true })
+
+      -- Volume and brightness (avizo)
+      hl.bind("XF86AudioMute",         hl.dsp.exec_cmd("volumectl toggle-mute"),    { locked = true })
+      hl.bind("XF86AudioMicMute",      hl.dsp.exec_cmd("volumectl -m toggle-mute"), { locked = true })
+      hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd("volumectl -u up"),          { locked = true, repeating = true })
+      hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd("volumectl -u down"),        { locked = true, repeating = true })
+      hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("lightctl up"),              { locked = true, repeating = true })
+      hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("lightctl down"),            { locked = true, repeating = true })
+
+      ----------------------------
+      ---- WINDOW/LAYER RULES ----
+      ----------------------------
+      -- https://wiki.hypr.land/Configuring/Basics/Window-Rules/
+      -- Pop-up file dialogs float, centred
+      hl.window_rule({ match = { title = "(Open|Progress|Save File)" },  float = true, center = true })
+      hl.window_rule({ match = { class = "(xdg-desktop-portal-gtk)" },   float = true, center = true })
+      hl.window_rule({ match = { class = "(polkit-gnome-authentication-agent-1|nm-connection-editor|org.gnome.Calculator|.blueman-manager-wrapped)" }, float = true, center = true })
+
+      -- https://wiki.hypr.land/Configuring/Basics/Layer-Rules/
+      hl.layer_rule({ match = { namespace = "launcher" },                   blur = true, ignore_alpha = 0 })   -- fuzzel
+      hl.layer_rule({ match = { namespace = "logout_dialog" },              blur = true })                     -- wlogout
+      hl.layer_rule({ match = { namespace = "swaync-control-center" },      blur = true, ignore_alpha = 0.7 })
+      hl.layer_rule({ match = { namespace = "swaync-notification-window" }, blur = true, ignore_alpha = 0.7 })
+    '';
   };
   # https://github.com/hyprwm/hyprland-wiki/issues/409
   # https://github.com/nix-community/home-manager/pull/4707
@@ -320,9 +265,7 @@ in
     configPackages = [ config.wayland.windowManager.hyprland.package ];
     enable = true;
     extraPortals = [
-      pkgs.xdg-desktop-portal
       pkgs.xdg-desktop-portal-gtk
-      hyprlandPkgs.xdg-desktop-portal-hyprland
     ];
     xdgOpenUsePortal = true;
   };

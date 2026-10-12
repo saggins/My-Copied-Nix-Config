@@ -26,8 +26,7 @@ in
     alacritty.enable = config.programs.alacritty.enable && isLinux;
     foot.enable = config.programs.foot.enable;
     fuzzel.enable = config.programs.fuzzel.enable;
-    # Disabled: the port emits a lua-inline color theme that requires configType = "lua",
-    # but we use "hyprlang" (see hyprland mixin). Border colors are hardcoded there instead.
+    # Disabled: border colors are hardcoded in the hyprland mixin's Lua config instead.
     hyprland.enable = false;
     waybar.enable = config.programs.waybar.enable;
     obs.enable = config.programs.obs-studio.enable;

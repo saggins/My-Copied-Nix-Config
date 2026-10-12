@@ -21,11 +21,12 @@ in
     ];
   };
   wayland.windowManager.hyprland = {
-    # exec-once via settings (merges with the list in the hyprland mixin) instead of
-    # a raw extraConfig string.
-    settings.exec-once = lib.mkIf (isLinux && !isLima) [
-      "[workspace 8 silent] /home/sangmin/share/gs.sh"
-    ];
+    # Appended to the hyprland.lua written by the hyprland mixin.
+    extraConfig = lib.mkIf (isLinux && !isLima) ''
+      hl.on("hyprland.start", function()
+          hl.exec_cmd("/home/sangmin/share/gs.sh", { workspace = "8 silent" })
+      end)
+    '';
   };
 
 

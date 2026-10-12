@@ -40,13 +40,5 @@
       satty           # screenshot editor
     ];
   };
-  wayland.windowManager.hyprland = {
-    settings = {
-      bind = [
-        "ALT, Print, exec, ${lib.getExe pkgs.hyprshot} --mode active --mode window --raw | ${lib.getExe pkgs.satty} --filename -"
-        "SHIFT, Print, exec, ${lib.getExe pkgs.hyprshot} --mode region --raw | ${lib.getExe pkgs.satty} --filename -"
-        "CTRL ALT, Print, exec, ${lib.getExe pkgs.hyprshot} --mode active --mode output --raw | ${lib.getExe pkgs.satty} --filename -"
-      ];
-    };
-  };
+  # Screenshot keybinds live in ../default.nix
 }

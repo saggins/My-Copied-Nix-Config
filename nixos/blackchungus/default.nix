@@ -71,7 +71,7 @@
     ];
 
     kernelParams = [
-      "video=HDMI-A-1:3840x2160@60"
+      "video=DP-3:1920x1080@144"
       #"video=DP-1:3440x1440@100"
     ];
   };

@@ -102,20 +102,5 @@ in
       systemdTargets = "hyprland-session.target";
     };
   };
-  wayland.windowManager.hyprland = lib.mkIf config.wayland.windowManager.hyprland.enable {
-    settings = {
-      bindr = [ "$mod, $mod_L, exec, ${pkgs.procps}/bin/pkill fuzzel || fuzzel-launcher" ];
-      bind = [
-        ", Print, exec, fuzzel-hyprshot"
-        "$mod, SPACE, exec, fuzzel-actions"
-        "CTRL ALT, SPACE, exec, hypr-activity-menu"
-        "CTRL ALT, B, exec, fuzzel-bluetooth"
-        "CTRL ALT, E, exec, fuzzel-emoji"
-        "CTRL ALT, K, exec, fuzzel-hyprpicker"
-        "CTRL ALT, P, exec, fuzzel-clipboard"
-        "CTRL ALT, R, exec, fuzzel-history"
-        "CTRL ALT, W, exec, fuzzel-wifi"
-      ];
-    };
-  };
+  # Launcher/menu keybinds live in ../default.nix
 }

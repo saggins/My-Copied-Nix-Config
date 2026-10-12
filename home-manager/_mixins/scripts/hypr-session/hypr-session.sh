@@ -45,7 +45,7 @@ case "$OPT" in
         hyprlock --immediate;;
     logout)
         session_stop
-        hyprctl dispatch exit;;
+        hyprctl dispatch 'hl.dsp.exit()';;
     reboot)
         session_stop
         /run/current-system/sw/bin/systemctl reboot;;

@@ -152,9 +152,9 @@ function activity_clear() {
         obs-cmd virtual-camera stop
     fi
     sleep 0.25
-    $HYPRCTL clients -j | jq -r ".[].address" | xargs -I {} sh -c 'hyprctl dispatch closewindow "address:{}"; sleep 0.1'
+    $HYPRCTL clients -j | jq -r ".[].address" | xargs -I {} sh -c "hyprctl dispatch \"hl.dsp.window.close({ window = 'address:{}' })\"; sleep 0.1"
     sleep 0.25
-    $HYPRCTL dispatch workspace 1 &>/dev/null
+    $HYPRCTL dispatch 'hl.dsp.focus({ workspace = 1 })' &>/dev/null
 }
 
 OPT="help"

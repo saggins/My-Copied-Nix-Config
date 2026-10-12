@@ -78,6 +78,26 @@ in
   programs = {
     waybar = {
       enable = true;
+      # Waybar 0.15.0 clicks workspaces with legacy `dispatch workspace N`,
+      # which Hyprland rejects when using a Lua config. Rewrite those calls to
+      # the hl.dsp API. Drop this once a Waybar release with Lua IPC lands.
+      package = pkgs.waybar.overrideAttrs (old: {
+        postPatch = (old.postPatch or "") + ''
+          substituteInPlace src/modules/hyprland/workspace.cpp \
+            --replace-fail '"dispatch focusworkspaceoncurrentmonitor " + std::to_string(id())' \
+                           '"dispatch hl.dsp.focus({ workspace = \"" + std::to_string(id()) + "\", on_current_monitor = true })"' \
+            --replace-fail '"dispatch workspace " + std::to_string(id())' \
+                           '"dispatch hl.dsp.focus({ workspace = \"" + std::to_string(id()) + "\" })"' \
+            --replace-fail '"dispatch focusworkspaceoncurrentmonitor name:" + name()' \
+                           '"dispatch hl.dsp.focus({ workspace = \"name:" + name() + "\", on_current_monitor = true })"' \
+            --replace-fail '"dispatch workspace name:" + name()' \
+                           '"dispatch hl.dsp.focus({ workspace = \"name:" + name() + "\" })"' \
+            --replace-fail '"dispatch togglespecialworkspace " + name()' \
+                           '"dispatch hl.dsp.workspace.toggle_special(\"" + name() + "\")"' \
+            --replace-fail '"dispatch togglespecialworkspace"' \
+                           '"dispatch hl.dsp.workspace.toggle_special()"'
+        '';
+      });
       style = ''
         * {
           font-family: FiraCode Nerd Font Mono;

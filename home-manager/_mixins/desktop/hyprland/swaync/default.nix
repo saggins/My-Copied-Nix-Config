@@ -551,11 +551,5 @@ in
       '';
     };
   };
-  wayland.windowManager.hyprland = {
-    settings = {
-      bind = [
-        "CTRL ALT, N, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client --toggle-panel --skip-wait"
-      ];
-    };
-  };
+  # Notification panel keybind lives in ../default.nix
 }

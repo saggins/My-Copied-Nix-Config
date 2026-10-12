@@ -158,7 +158,7 @@ case "$selection" in
     window_address="${title_to_address[$window_selection]}"
 
     # Focus the selected window
-    hyprctl dispatch focuswindow "address:$window_address"
+    hyprctl dispatch "hl.dsp.focus({ window = 'address:$window_address' })"
 
     # Wait a moment to ensure any transitions are complete
     sleep 0.75
@@ -167,9 +167,9 @@ case "$selection" in
     sleep 0.25
 
     # Return to original workspace and monitor
-    hyprctl dispatch movetoworkspace "$current_workspace,satty"
-    hyprctl dispatch focusmonitor "$current_monitor"
-    hyprctl dispatch workspace "$current_workspace"
+    hyprctl dispatch "hl.dsp.window.move({ workspace = '$current_workspace', window = 'class:satty' })"
+    hyprctl dispatch "hl.dsp.focus({ monitor = '$current_monitor' })"
+    hyprctl dispatch "hl.dsp.focus({ workspace = '$current_workspace' })"
     ;;
   "󰹑 Screenshot a Monitor")
     # Format monitor information for display and selection
