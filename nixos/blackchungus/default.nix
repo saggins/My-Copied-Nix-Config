@@ -13,6 +13,7 @@
     inputs.nixos-hardware.nixosModules.common-pc
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     ./disks.nix
+    ./secureboot.nix
   ];
 
   boot = {
