@@ -79,7 +79,6 @@ in
       with pkgs;
       [
         vim
-        asciicam # Terminal webcam
         bc # Terminal calculator
         bandwhich # Modern Unix `iftop`
         bmon # Modern Unix `iftop`
@@ -139,6 +138,7 @@ in
         yq-go # Terminal `jq` for YAML
       ]
       ++ lib.optionals isLinux [
+        asciicam # Terminal webcam; Linux-only (v4l)
         figlet # Terminal ASCII banners
         iw # Terminal WiFi info
         lurk # Modern Unix `strace`
