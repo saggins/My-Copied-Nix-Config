@@ -162,7 +162,7 @@ in
     sessionVariables = {
       # i don't like micro sorry
       EDITOR = "vim";
-      MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
+      MANPAGER = "sh -c 'col -bx | bat --language man'";
       MANROFFOPT = "-c";
       MICRO_TRUECOLOR = "1";
       PAGER = "bat";
