@@ -24,8 +24,8 @@ keys:
   - &admin_workhorse age1esc733a49rl960gv8nk67r9vl4tk8nmh3jjuneypmfpxhah65czss2phlu
   - &user_dorado  age1yubikey1qg828aw83gl6xjy9g6aj63we5sfmlezxjju03wp0uyvwztydx36hw5yhrpu 
   - &admin_dorado age1wp9ra2utsq2q2wc9l32u7yd6adkslkfspg6m4nusa64qclymtqgqpayqev
-  # uhh i'm not sure if i'll bother to disticnt them
   - &admin_bastion age1prw6mjacnn5y3zvegqgv85qjhemu78rhtug0kqqjrlgr97v7qczqj026g2
+  - &user_bastion age10v6sf4wtudxx8kxvq7gr6p5dsqje7cag9dlvskzprlp4qu6dp4mshcq6xe
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
@@ -42,3 +42,4 @@ creation_rules:
     - age:
         - *admin_bastion
         - *user_dorado
+        - *user_bastion
