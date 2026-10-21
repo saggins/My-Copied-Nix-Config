@@ -138,6 +138,7 @@ in
         yq-go # Terminal `jq` for YAML
       ]
       ++ lib.optionals isLinux [
+        asciicam # Terminal webcam; Linux-only (v4l)
         figlet # Terminal ASCII banners
         iw # Terminal WiFi info
         lurk # Modern Unix `strace`
@@ -170,7 +171,7 @@ in
     sessionVariables = {
       # i don't like micro sorry
       EDITOR = "vim";
-      MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
+      MANPAGER = "sh -c 'col -bx | bat --language man'";
       MANROFFOPT = "-c";
       MICRO_TRUECOLOR = "1";
       PAGER = "bat";

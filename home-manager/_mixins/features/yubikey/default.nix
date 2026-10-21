@@ -55,8 +55,11 @@ lib.mkIf (lib.elem username installFor) {
       };
     };
     ssh = lib.mkIf isDarwin {
-      addKeysToAgent = "yes";
       enable = true;
+      enableDefaultConfig = false;
+      settings."*" = {
+        AddKeysToAgent = "yes";
+      };
       includes = [
         "${config.home.homeDirectory}/.ssh/local_config"
       ];
