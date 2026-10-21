@@ -38,6 +38,12 @@
       sops
     ];
 
+    # Native arm64 Homebrew must win over the Rosetta install in /usr/local/bin.
+    # Order 1100 sits after the nix profiles (1000) and before /usr/local/bin (1200).
+    systemPath = lib.mkIf (platform == "aarch64-darwin") (
+      lib.mkOrder 1100 [ "/opt/homebrew/bin:/opt/homebrew/sbin" ]
+    );
+
     variables = {
       EDITOR = "vim";
       MANPAGER = "less -R";
@@ -105,7 +111,8 @@
   programs = {
     fish = {
       enable = true;
-      shellAliases = {
+      shellAliases = lib.optionalAttrs (platform == "aarch64-darwin") {
+        brew-old = "arch -x86_64 /usr/local/bin/brew";
       };
     };
     gnupg.agent = {
