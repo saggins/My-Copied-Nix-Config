@@ -2,6 +2,7 @@
 {
   config,
   hostname,
+  isLightweight,
   isLima,
   isWorkstation,
   lib,
@@ -14,7 +15,7 @@ let
 in 
  {
   home = {
-    packages = lib.mkIf (isLinux && !isLima)  [
+    packages = lib.mkIf (isLinux && !isLima && !isLightweight) [
       pkgs.zotero
       pkgs.libreoffice
       pkgs.discord

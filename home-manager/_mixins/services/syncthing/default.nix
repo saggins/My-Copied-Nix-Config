@@ -1,5 +1,6 @@
 {
   config,
+  isLightweight,
   isWorkstation,
   hostname,
   lib,
@@ -11,6 +12,6 @@ let
 in
 {
   services.syncthing = {
-    enable = true;
+    enable = !isLightweight;
   };
 }

@@ -1,4 +1,10 @@
-{ config, pkgs, ... }:
+{
+  config,
+  isLightweight,
+  lib,
+  pkgs,
+  ...
+}:
 let
   name = builtins.baseNameOf (builtins.toString ./.);
   shellApplication = pkgs.writeShellApplication {
@@ -14,7 +20,7 @@ let
     text = builtins.readFile ./${name}.sh;
   };
 in
-{
+lib.mkIf (!isLightweight) {
   home = {
     file = {
       "${config.home.homeDirectory}/.lima/_templates/blackace.yaml".text = builtins.readFile ./blackace.yaml;

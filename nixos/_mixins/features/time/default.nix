@@ -1,20 +1,21 @@
 {
   hostname,
+  isLightweight,
   lib,
   ...
 }:
 let
-  isServer = hostname == "malak" || hostname == "revan";
+  isServer = hostname == "malak" || hostname == "revan" || isLightweight;
   useGeoclue = !isServer;
 in
 {
-  location = {
+  location = lib.mkIf (!isLightweight) {
     provider = "geoclue2";
   };
 
   services = {
     automatic-timezoned.enable = useGeoclue;
-    geoclue2 = {
+    geoclue2 = lib.mkIf (!isLightweight) {
       enable = true;
       # https://github.com/NixOS/nixpkgs/issues/321121
       geoProviderUrl = "https://api.positon.xyz/v1/geolocate?key=test";
@@ -25,12 +26,13 @@ in
   };
 
   # Prevent "Failed to open /etc/geoclue/conf.d/:" errors
-  systemd.tmpfiles.rules = [
+  systemd.tmpfiles.rules = lib.optionals (!isLightweight) [
     "d /etc/geoclue/conf.d 0755 root root"
   ];
 
   time = {
-    hardwareClockInLocalTime = true;
+    # VPS clocks are UTC
+    hardwareClockInLocalTime = !isLightweight;
     timeZone = lib.mkIf isServer "UTC";
   };
 }

@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  isLightweight,
+  lib,
+  pkgs,
+  ...
+}:
 let
   name = builtins.baseNameOf (builtins.toString ./.);
   shellApplication = pkgs.writeShellApplication {
@@ -14,5 +19,5 @@ let
   };
 in
 {
-  home.packages = with pkgs; [ shellApplication ];
+  home.packages = lib.optionals (!isLightweight) [ shellApplication ];
 }

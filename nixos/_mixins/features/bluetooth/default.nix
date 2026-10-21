@@ -1,5 +1,5 @@
-{ pkgs, ... }:
-{
+{ isLightweight, lib, pkgs, ... }:
+lib.mkIf (!isLightweight) {
   environment.systemPackages = with pkgs; [
     bluetui
   ];

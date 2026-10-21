@@ -1,7 +1,7 @@
-{ lib,config,pkgs,...}: {
+{ isLightweight, lib, config, pkgs, ... }: {
 
   home = {
-    packages = [
+    packages = lib.optionals (!isLightweight) [
       pkgs.obsidian
     ];
   };

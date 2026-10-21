@@ -83,6 +83,10 @@
           hostname = "workhorse";
           username = "sangmin";
         };
+        "sangmin@bastion" = helper.mkHome {
+          hostname = "bastion";
+          username = "sangmin";
+        };
         "sangmin@dorado" = helper.mkHome {
           hostname = "dorado";
           username = "sangmin";
@@ -173,6 +177,11 @@
         };
         workhorse = helper.mkNixos {
           hostname = "workhorse";
+          username = "sangmin";
+        };
+        # 1 vCPU / 1GB RAM KVM VPS; build locally, deploy with nixos-anywhere / --target-host
+        bastion = helper.mkNixos {
+          hostname = "bastion";
           username = "sangmin";
         };
         phasma = helper.mkNixos {

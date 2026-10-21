@@ -2,6 +2,7 @@
   config,
   hostname,
   isLaptop,
+  isLightweight,
   isWorkstation,
   lib,
   pkgs,
@@ -181,7 +182,8 @@ in
     useDHCP = lib.mkDefault true;
   };
   services = {
-    avahi = {
+    # mDNS has no business on a public VPS interface
+    avahi = lib.mkIf (!isLightweight) {
       enable = true;
       nssmdns4 = true;
       publish = {

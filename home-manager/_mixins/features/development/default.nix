@@ -1,5 +1,7 @@
 {
   config,
+  isLightweight,
+  lib,
   pkgs,
   ...
 }:
@@ -19,7 +21,6 @@
     # A Modern Unix experience
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
     packages = with pkgs; [
-      breezy # bzr client
       difftastic # Modern Unix `diff`
       ghbackup # Backup GitHub repositories
       ghorg # Clone all repositories in a GitHub organization
@@ -31,6 +32,9 @@
       tokei # Modern Unix `wc` for code
       lazygit
       #inshellisense #eww microsoft: intellisense for shell
+    ]
+    ++ lib.optionals (!isLightweight) [
+      breezy # bzr client; pulls in a rust toolchain
     ];
   };
 

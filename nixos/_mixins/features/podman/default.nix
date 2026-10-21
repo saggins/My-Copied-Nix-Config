@@ -1,5 +1,6 @@
 {
   config,
+  isLightweight,
   isWorkstation,
   lib,
   pkgs,
@@ -10,7 +11,7 @@ let
   installFor = [ "martin" "sangmin" ];
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
 in
-lib.mkIf (lib.elem "${username}" installFor) {
+lib.mkIf (lib.elem "${username}" installFor && !isLightweight) {
   #https://nixos.org/wiki/Podman
   environment = {
     systemPackages =

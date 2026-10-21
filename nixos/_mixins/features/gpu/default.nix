@@ -2,6 +2,7 @@
   config,
   hostname,
   isInstall,
+  isLightweight,
   isWorkstation,
   lib,
   pkgs,
@@ -22,7 +23,7 @@ let
   intelLegacyHosts = [ "workhorse" ];
   useIntelCurrentRuntime = hasIntelGPU && !(lib.elem hostname intelLegacyHosts);
 in
-lib.mkIf isInstall {
+lib.mkIf (isInstall && !isLightweight) {
 
   boot = {
     # If the "nvidia" driver is enabled, blacklist the "nouveau" driver

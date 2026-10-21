@@ -10,6 +10,7 @@
 let
   # Declare which hosts have Tailscale enabled.
   installOn = [
+    "bastion"
     "blackchungus"
     "workhorse"
   ];

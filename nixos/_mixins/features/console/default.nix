@@ -3,6 +3,7 @@
   desktop,
   hostname,
   isInstall,
+  isLightweight,
   lib,
   pkgs,
   ...
@@ -83,7 +84,7 @@ in
     # - https://github.com/Aetf/kmscon/pull/66
     # TODO: Does compiling without fbterm help by odd sized displays?
     # - https://github.com/Aetf/kmscon/issues/18#issuecomment-612003371
-    kmscon = lib.mkIf isInstall {
+    kmscon = lib.mkIf (isInstall && !isLightweight) {
       enable = true;
       hwRender = false;
       fonts = [

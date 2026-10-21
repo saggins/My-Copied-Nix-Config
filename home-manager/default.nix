@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  isLightweight,
   isLima,
   isWorkstation,
   lib,
@@ -14,6 +15,8 @@
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   platformIsLinux = lib.hasSuffix "linux" platform;
+  # The full fastfetch drags in SDL, Vulkan, X11 and friends
+  fastfetch = if isLightweight then pkgs.fastfetchMinimal else pkgs.fastfetch;
 in
 {
   imports = [
@@ -79,7 +82,6 @@ in
       with pkgs;
       [
         vim
-        asciicam # Terminal webcam
         bc # Terminal calculator
         bandwhich # Modern Unix `iftop`
         bmon # Modern Unix `iftop`
@@ -111,9 +113,7 @@ in
         jpegoptim # Terminal JPEG optimizer
         jiq # Modern Unix `jq`
         lastpass-cli # Terminal LastPass client
-        lima # Terminal VM manager
         magic-wormhole-rs # Terminal file transfer
-        marp-cli # Terminal Markdown presenter
         mprocs # Terminal parallel process runner
         mtr # Modern Unix `traceroute`
         netdiscover # Modern Unix `arp`
@@ -130,7 +130,6 @@ in
         speedtest-go # Terminal speedtest.net
         timer # Terminal timer
         tldr # Modern Unix `man`
-        ueberzugpp # Terminal image viewer integration
         unzip # Terminal ZIP extractor
         upterm # Terminal sharing
         wget # Terminal HTTP client
@@ -149,10 +148,19 @@ in
         stress-ng # Terminal CPU stress test
         tty-clock # Terminal clock
         usbutils # Terminal USB info
-        vhs # Terminal GIF recorder
         wavemon # Terminal WiFi monitor
         writedisk # Modern Unix `dd`
         zsync # Terminal file sync; FTBFS on aarch64-darwin
+      ]
+      # Heavy closures (qemu, chromium, ffmpeg, opencv); not wanted on small VPSes
+      ++ lib.optionals (!isLightweight) [
+        asciicam # Terminal webcam
+        lima # Terminal VM manager
+        marp-cli # Terminal Markdown presenter
+        ueberzugpp # Terminal image viewer integration
+      ]
+      ++ lib.optionals (isLinux && !isLightweight) [
+        vhs # Terminal GIF recorder
       ]
       ++ lib.optionals isDarwin [
         m-cli # Terminal Swiss Army Knife for macOS
@@ -174,6 +182,14 @@ in
   };
 
   fonts.fontconfig.enable = true;
+
+  # Only ship the locale in use rather than every glibc locale
+  i18n.glibcLocales = lib.mkIf isLightweight (
+    pkgs.glibcLocales.override {
+      allLocales = false;
+      locales = [ "en_US.UTF-8/UTF-8" ];
+    }
+  );
 
   # Workaround home-manager bug with flakes
   # - https://github.com/nix-community/home-manager/issues/2033
@@ -203,6 +219,8 @@ in
       extraPackages = with pkgs.bat-extras; [
         batgrep
         batwatch
+      ] ++ lib.optionals (!isLightweight) [
+        # Pulls in rustfmt, clang-format and friends
         prettybat
       ];
       config = {
@@ -213,12 +231,12 @@ in
     btop = {
       enable = true;
       package = pkgs.btop.override {
-        cudaSupport = isLinux;
-        rocmSupport = isLinux;
+        cudaSupport = isLinux && !isLightweight;
+        rocmSupport = isLinux && !isLightweight;
       };
     };
     cava = {
-      enable = isLinux;
+      enable = isLinux && !isLightweight;
     };
     dircolors = {
       enable = true;
@@ -257,19 +275,19 @@ in
         clock = if isLinux then ''${pkgs.tty-clock}/bin/tty-clock -B -c -C 4 -f "%a, %d %b"'' else "";
         dadjoke = ''${pkgs.curlMinimal}/bin/curl --header "Accept: text/plain" https://icanhazdadjoke.com/'';
         dmesg = "${pkgs.util-linux}/bin/dmesg --human --color=always";
-        neofetch = "${pkgs.fastfetch}/bin/fastfetch";
+        neofetch = "${fastfetch}/bin/fastfetch";
         glow = "${pkgs.frogmouth}/bin/frogmouth";
         hr = ''${pkgs.hr}/bin/hr "─━"'';
         ip = lib.mkIf isLinux "${pkgs.iproute2}/bin/ip --color --brief";
         less = "${pkgs.bat}/bin/bat";
-        lm = "${pkgs.lima}/bin/limactl";
+        lm = lib.mkIf (!isLightweight) "${pkgs.lima}/bin/limactl";
         lolcat = "${pkgs.dotacat}/bin/dotacat";
         lsusb = "${pkgs.cyme}/bin/cyme --headings";
         moon = "${pkgs.curlMinimal}/bin/curl -s wttr.in/Moon";
         more = "${pkgs.bat}/bin/bat";
         pq = "${pkgs.pueue}/bin/pueue";
         ruler = ''${pkgs.hr}/bin/hr "╭─³⁴⁵⁶⁷⁸─╮"'';
-        screenfetch = "${pkgs.fastfetch}/bin/fastfetch";
+        screenfetch = "${fastfetch}/bin/fastfetch";
         speedtest = "${pkgs.speedtest-go}/bin/speedtest-go";
         store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
         top = "${pkgs.btop}/bin/btop";
@@ -712,7 +730,7 @@ in
       };
     };
     yt-dlp = {
-      enable = true;
+      enable = !isLightweight; # Pulls in deno
       settings = {
         audio-format = "best";
         audio-quality = 0;

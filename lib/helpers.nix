@@ -16,8 +16,14 @@
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
+      # Resource constrained hosts (small VPSes); skip heavy and desktop-only features
+      isLightweight = builtins.elem hostname [ "bastion" ];
       isLaptop =
-        hostname != "vader" && hostname != "phasma" && hostname != "revan" && hostname != "malak";
+        hostname != "vader"
+        && hostname != "phasma"
+        && hostname != "revan"
+        && hostname != "malak"
+        && !isLightweight;
       isLima = hostname == "blackace" || hostname == "defender" || hostname == "fighter";
       isWorkstation = builtins.isString desktop;
     in
@@ -34,6 +40,7 @@
           stateVersion
           isInstall
           isLaptop
+          isLightweight
           isLima
           isISO
           isWorkstation
@@ -53,8 +60,14 @@
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
+      # Resource constrained hosts (small VPSes); skip heavy and desktop-only features
+      isLightweight = builtins.elem hostname [ "bastion" ];
       isLaptop =
-        hostname != "vader" && hostname != "phasma" && hostname != "revan" && hostname != "malak";
+        hostname != "vader"
+        && hostname != "phasma"
+        && hostname != "revan"
+        && hostname != "malak"
+        && !isLightweight;
       isWorkstation = builtins.isString desktop;
       tailNet = "comet-court.ts.net";
     in
@@ -71,6 +84,7 @@
           isInstall
           isISO
           isLaptop
+          isLightweight
           isWorkstation
           tailNet
           ;
