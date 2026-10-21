@@ -138,7 +138,6 @@ in
         yq-go # Terminal `jq` for YAML
       ]
       ++ lib.optionals isLinux [
-        asciicam # Terminal webcam; Linux-only (v4l)
         figlet # Terminal ASCII banners
         iw # Terminal WiFi info
         lurk # Modern Unix `strace`
@@ -155,12 +154,12 @@ in
       ]
       # Heavy closures (qemu, chromium, ffmpeg, opencv); not wanted on small VPSes
       ++ lib.optionals (!isLightweight) [
-        asciicam # Terminal webcam
         lima # Terminal VM manager
         marp-cli # Terminal Markdown presenter
         ueberzugpp # Terminal image viewer integration
       ]
       ++ lib.optionals (isLinux && !isLightweight) [
+        asciicam # Terminal webcam; Linux-only (v4l)
         vhs # Terminal GIF recorder
       ]
       ++ lib.optionals isDarwin [
