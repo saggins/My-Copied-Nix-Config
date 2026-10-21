@@ -26,6 +26,7 @@
         && !isLightweight;
       isLima = hostname == "blackace" || hostname == "defender" || hostname == "fighter";
       isWorkstation = builtins.isString desktop;
+      tailNet = "comet-court.ts.net";
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
@@ -44,6 +45,7 @@
           isLima
           isISO
           isWorkstation
+          tailNet
           ;
       };
       modules = [ ../home-manager ];

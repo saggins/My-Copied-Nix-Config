@@ -53,13 +53,16 @@
   services.qemuGuest.enable = true;
   hardware.enableRedistributableFirmware = lib.mkForce false;
 
-  # Most providers hand out the address via DHCP. If yours is static, use the
-  # values from the control panel instead, e.g.:
-  # networking = {
-  #   useDHCP = false;
-  #   interfaces.ens3.ipv4.addresses = [ { address = "x.x.x.x"; prefixLength = 24; } ];
-  #   defaultGateway = "x.x.x.1";
-  # };
+  # The provider has no DHCP; static IPv4 from the control panel.
+  # Matched by name pattern so it works whatever the NIC ends up being called.
+  networking.useDHCP = false;
+  networking.useNetworkd = true;
+  systemd.network.networks."10-wan" = {
+    matchConfig.Name = "en* eth*";
+    address = [ "107.172.75.145/25" ];
+    routes = [ { Gateway = "107.172.75.129"; } ];
+    linkConfig.RequiredForOnline = "routable";
+  };
 
   # Keep the 20GB disk from filling up with store paths
   nix = {
@@ -70,5 +73,10 @@
       trusted-users = [ "sangmin" ];
     };
   };
+  # Allow workhorse to log in, in addition to the keys from the user mixin
+  users.users.sangmin.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMohOkwkbAVpIyMRuTadGYhreqPHFIwal5qWGKTdWQCU sangmin@workhorse"
+  ];
+
   programs.nh.clean.extraArgs = lib.mkForce "--keep-since 7d --keep 3";
 }

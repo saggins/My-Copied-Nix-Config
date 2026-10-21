@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, tailNet, ... }:
 let
   name = builtins.baseNameOf (builtins.toString ./.);
   shellApplication = pkgs.writeShellApplication {
@@ -12,11 +12,14 @@ let
   };
   buildHome = pkgs.writeScriptBin "build-home" ''nh-home build'';
   switchHome = pkgs.writeScriptBin "switch-home" ''nh-home switch'';
+  # Build bastion here and push it over Tailscale SSH; the VPS is too small to build itself
+  switchVpsHome = pkgs.writeScriptBin "switch-vps-home" ''nh-home switch bastion.${tailNet}'';
 in
 {
   home.packages = with pkgs; [
     shellApplication
     buildHome
     switchHome
+    switchVpsHome
   ];
 }
