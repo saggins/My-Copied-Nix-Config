@@ -43,16 +43,33 @@ jobs:
             exit 0
           fi
 
+          # Issue bodies and comments are capped at 65536 characters, so lead
+          # with per-config counts and only inline the full tables if they fit.
+          # The complete reports are in the run's step summary and artifacts.
           {
             echo "@claude new vulnerabilities were found by vulnxscan in [${{ github.workflow }} run ${{ github.run_id }}](${RUN_URL}) at ${{ github.sha }}."
             echo ""
+            echo "| Config | Findings |"
+            echo "| --- | --- |"
+            for report in "${reports[@]}"; do
+              # csv2md output: header + separator rows, then one row per finding
+              echo "| $(basename "${report}" .vulnxscan.md) | $(( $(wc -l < "${report}") - 2 )) |"
+            done
+            echo ""
+          } > body.md
+          {
             for report in "${reports[@]}"; do
               echo "### $(basename "${report}" .vulnxscan.md)"
               echo ""
               cat "${report}"
               echo ""
             done
-          } > body.md
+          } > details.md
+          if [ $(( $(wc -c < body.md) + $(wc -c < details.md) )) -le 60000 ]; then
+            cat details.md >> body.md
+          else
+            echo "Full tables are too long for an issue; see the [run summary](${RUN_URL})." >> body.md
+          fi
 
           gh label create vulnxscan --color b60205 \
             --description "Vulnerabilities found by vulnxscan" --force
@@ -78,9 +95,8 @@ jobs:
 
             This repository is a Nix flake configuring NixOS, nix-darwin and
             Home Manager hosts. The vulnxscan (sbomnix) reports for this run are
-            in ./vulnxscan/*.vulnxscan.md and were posted as the latest comment
-            (or body) of the issue above; read them, and the issue with
-            `gh issue view`, for context.
+            are in ./vulnxscan/*.vulnxscan.md; read them in full, as the issue
+            may only list counts. Use `gh issue view` for earlier context.
 
             Post ONE comment on the issue with `gh issue comment` containing:
             1. A short summary: affected packages, the most severe CVEs, and
