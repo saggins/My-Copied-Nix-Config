@@ -35,13 +35,6 @@ case "${1}" in
   inzone)
       set_default_sink Sony_INZONE_Buds
       ${0} status;;
-  usb)
-      HOST="$(hostnamectl hostname)"
-      case "${HOST}" in
-        vader)  ${0} ssl2;;
-        phasma) ${0} ssl2;;
-      esac
-      ;;
   vr_p10)
       set_default_sink VR_P10_Dongle
       ${0} status;;

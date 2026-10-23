@@ -2,17 +2,6 @@
 
 set +e  # Disable errexit
 set +u  # Disable nounset
-HOSTNAME=$(hostname -s)
-
-function bluetooth_devices() {
-  case "$1" in
-    connect|disconnect)
-    if [ "$HOSTNAME" == "phasma" ]; then
-      bluetoothctl "$1" E4:50:EB:7D:86:22
-    fi
-    ;;
-  esac
-}
 
 function session_start() {
   # Restart the desktop portal services in the correct order
@@ -24,7 +13,6 @@ function session_start() {
       fi
     fi
   done
-  bluetooth_devices connect
 }
 
 function session_stop() {

@@ -154,7 +154,7 @@ in
       ]
       # Heavy closures (qemu, chromium, ffmpeg, opencv); not wanted on small VPSes
       ++ lib.optionals (!isLightweight) [
-        lima # Terminal VM manager
+        lima-full # Terminal VM manager; incl. non-native guestagents (x86_64 on arm64)
         marp-cli # Terminal Markdown presenter
         ueberzugpp # Terminal image viewer integration
       ]
@@ -216,13 +216,16 @@ in
     aria2.enable = true;
     bat = {
       enable = true;
-      extraPackages = with pkgs.bat-extras; [
-        batgrep
-        batwatch
-      ] ++ lib.optionals (!isLightweight) [
-        # Pulls in rustfmt, clang-format and friends
-        prettybat
-      ];
+      extraPackages =
+        with pkgs.bat-extras;
+        [
+          batgrep
+          batwatch
+        ]
+        ++ lib.optionals (!isLightweight) [
+          # Pulls in rustfmt, clang-format and friends
+          prettybat
+        ];
       config = {
         style = "plain";
       };
@@ -280,7 +283,7 @@ in
         hr = ''${pkgs.hr}/bin/hr "─━"'';
         ip = lib.mkIf isLinux "${pkgs.iproute2}/bin/ip --color --brief";
         less = "${pkgs.bat}/bin/bat";
-        lm = lib.mkIf (!isLightweight) "${pkgs.lima}/bin/limactl";
+        lm = lib.mkIf (!isLightweight) "${pkgs.lima-full}/bin/limactl";
         lolcat = "${pkgs.dotacat}/bin/dotacat";
         lsusb = "${pkgs.cyme}/bin/cyme --headings";
         moon = "${pkgs.curlMinimal}/bin/curl -s wttr.in/Moon";

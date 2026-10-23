@@ -143,11 +143,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 
     # Rsync nix-config to the target install and set the remote origin to SSH.
     rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/Zero/"
-    if [ "$TARGET_HOST" != "crawler" ] && [ "$TARGET_HOST" != "dagger" ]; then
-        pushd "/mnt/home/$TARGET_USER/Zero/nix-config"
-        git remote set-url origin git@github.com:saggins/My-Copied-Nix-Config.git
-        popd
-    fi
+    pushd "/mnt/home/$TARGET_USER/Zero/nix-config"
+    git remote set-url origin git@github.com:saggins/My-Copied-Nix-Config.git
+    popd
 
     # Copy the sops keys.txt to the target install
     if [ -e "$HOME/.config/sops/age/keys.txt" ]; then

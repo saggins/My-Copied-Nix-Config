@@ -26,13 +26,6 @@ case "${1}" in
   ssl2)
       set_default_source Solid_State_Logic_SSL_2
       ${0} status;;
-  usb)
-      HOST="$(hostnamectl hostname)"
-      case "${HOST}" in
-        phasma) ${0} ssl2;;
-        vader)  ${0} ssl2;;
-      esac
-      ;;
   status)
     SINK="$(get_default_source)"
     case "${SINK}" in

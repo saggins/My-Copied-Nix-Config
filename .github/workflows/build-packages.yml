@@ -93,7 +93,7 @@ jobs:
       - uses: DeterminateSystems/flakehub-cache-action@v1
       - name: ${{ matrix.package }}
         run: |
-            nix build .#nixosConfigurations.vader.pkgs.${{ matrix.package }} -L
+            nix build .#nixosConfigurations.blackchungus.pkgs.${{ matrix.package }} -L
       - name: sbomnix
         run: |
           name="${{ github.job }}-${{ matrix.package }}"
@@ -147,7 +147,7 @@ jobs:
       - name: ${{ matrix.package }}
         run: |
           if ! nix eval ".#${{ matrix.package }}.meta.license.spdxId" --raw 2>/dev/null; then
-            nix build .#nixosConfigurations.vader.pkgs.${{ matrix.package }} -L
+            nix build .#nixosConfigurations.blackchungus.pkgs.${{ matrix.package }} -L
           else
             nix build .#${{ matrix.package }} -L
           fi
@@ -192,7 +192,7 @@ jobs:
       - uses: DeterminateSystems/flakehub-cache-action@v1
       - name: ${{ matrix.package }}
         run: |
-          nix build .#darwinConfigurations.momin.pkgs.${{ matrix.package }} -L
+          nix build .#darwinConfigurations.dorado.pkgs.${{ matrix.package }} -L
       - name: sbomnix
         run: |
           name="${{ github.job }}-${{ matrix.package }}"
