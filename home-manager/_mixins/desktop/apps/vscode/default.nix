@@ -50,6 +50,7 @@ lib.mkIf (lib.elem username installFor) {
           vscode-marketplace.bmalehorn.shell-syntax
           vscode-marketplace.bmalehorn.vscode-fish
           vscode-marketplace.budparr.language-hugo-vscode
+          vscode-marketplace.catppuccin.catppuccin-vsc
           vscode-marketplace.catppuccin.catppuccin-vsc-icons
           vscode-marketplace.codezombiech.gitignore
           vscode-marketplace.coolbear.systemd-unit-file
