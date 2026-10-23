@@ -12,12 +12,12 @@ concurrency:
   cancel-in-progress: true
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   build-server:
     name: 💁
-    runs-on: ubuntu-latest
+    # Builds land in workhorse's /nix/store, served to the other hosts by nix-serve
+    runs-on: [self-hosted, workhorse]
     strategy:
       matrix:
         host:
@@ -28,21 +28,16 @@ jobs:
             path: '.#nixosConfigurations.{host}.config.system.build.toplevel'
           - type: 'home'
             path: '.#homeConfigurations."sangmin@{host}".activationPackage'
+    env:
+      # GC root so the latest build survives garbage collection on workhorse
+      OUT_LINK: /nix/var/nix/gcroots/ci/${{ matrix.host }}-${{ matrix.config-type.type }}
     steps:
     - uses: actions/checkout@v4
-    - uses: wimpysworld/nothing-but-nix@main
-      with:
-        hatchet-protocol: 'holster'
-    - uses: DeterminateSystems/determinate-nix-action@v3
-      with:
-        extra-conf: |
-          lazy-trees = true
-    - uses: DeterminateSystems/flakehub-cache-action@v1
     - name: ${{ matrix.host }} - ${{ matrix.config-type.type }}
       run: |
         FLAKEREF="${{ matrix.config-type.path }}"
         FLAKEREF="${FLAKEREF/\{host\}/${{ matrix.host }}}"
-        nix build ${FLAKEREF} -L
+        nix build ${FLAKEREF} -L --out-link "${OUT_LINK}"
     - name: sbomnix
       run: |
         name="${{ matrix.host }}-${{ matrix.config-type.type }}"
@@ -50,7 +45,7 @@ jobs:
           --csv "${name}.sbom.csv" \
           --cdx "${name}.sbom.cdx.json" \
           --spdx "${name}.sbom.spdx.json" \
-          ./result
+          "${OUT_LINK}"
     - name: vulnxscan
       run: |
         name="${{ matrix.host }}-${{ matrix.config-type.type }}"
