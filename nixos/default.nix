@@ -38,7 +38,13 @@
     initrd.verbose = false;
     kernelModules = [ "vhost_vsock" ];
     # ISOs stay on 6.18: zfs (included in installer media) is marked broken on 7.3
-    kernelPackages = lib.mkForce (if isInstall then pkgs.linuxPackages_7_3 else pkgs.linuxPackages_6_18);
+    # NVIDIA hosts stay on 6.18: the 595.x driver doesn't build against 7.3 yet
+    kernelPackages = lib.mkForce (
+      if isInstall && !(lib.elem "nvidia" config.services.xserver.videoDrivers) then
+        pkgs.linuxPackages_7_3
+      else
+        pkgs.linuxPackages_6_18
+    );
     # Only enable the systemd-boot on installs, not live media (.ISO images)
     loader = lib.mkIf isInstall {
       efi.canTouchEfiVariables = true;
