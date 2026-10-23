@@ -1,10 +1,16 @@
 {
   config,
+  hostname,
   isLightweight,
   lib,
   pkgs,
+  tailNet,
   ...
 }:
+let
+  # Ollama runs on blackchungus; other hosts reach it over the tailnet
+  ollamaHost = if hostname == "blackchungus" then "127.0.0.1" else "blackchungus.${tailNet}";
+in
 {
   # Enable the Catppuccin theme
   catppuccin = {
@@ -52,6 +58,20 @@
         editor = "vim";
         git_protocol = "ssh";
         prompt = "enabled";
+      };
+    };
+    opencode = {
+      enable = !isLightweight;
+      settings = {
+        provider.ollama = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "Ollama (blackchungus)";
+          options.baseURL = "http://${ollamaHost}:11434/v1";
+          models = {
+            "qwen3-coder:30b".name = "Qwen3 Coder 30B";
+            "gpt-oss:20b".name = "gpt-oss 20B";
+          };
+        };
       };
     };
     git = {
