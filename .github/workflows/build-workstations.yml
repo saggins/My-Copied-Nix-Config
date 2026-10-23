@@ -31,7 +31,7 @@ jobs:
       # GC root so the latest build survives garbage collection on workhorse
       OUT_LINK: /nix/var/nix/gcroots/ci/${{ matrix.host }}-${{ matrix.config-type.type }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: ${{ matrix.host }} - ${{ matrix.config-type.type }}
       run: |
         FLAKEREF="${{ matrix.config-type.path }}"
@@ -52,7 +52,7 @@ jobs:
           --triage \
           --sbom "${name}.sbom.cdx.json"
         if [ -e vulns.triage.csv ]; then
-          grep -v -E "not_vulnerable|fix_not_available" vulns.triage.csv > cve.csv
+          grep -v -E "not_vulnerable|fix_not_available|err_invalid_version|err_missing_repology_version" vulns.triage.csv > cve.csv
           if [ $(wc -l < cve.csv) -gt 1 ]; then
             nix run github:nixos/nixpkgs#csv2md -- --columns "0-7,9" cve.csv | tee "${name}.vulnxscan.md"
             echo "### Vulnerability Scan Results for ${{ matrix.host }}-${{ matrix.config-type.type }}" >> $GITHUB_STEP_SUMMARY
