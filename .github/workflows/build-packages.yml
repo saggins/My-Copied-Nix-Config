@@ -61,6 +61,12 @@ jobs:
               echo "" >> $GITHUB_STEP_SUMMARY
             fi
           fi
+      - name: Upload vulnxscan report
+        uses: actions/upload-artifact@v4
+        with:
+          name: vulnxscan-${{ github.job }}-${{ matrix.package }}
+          path: "*.vulnxscan.md"
+          if-no-files-found: ignore
 
   build-fonts:
     name: 🔤
@@ -115,3 +121,22 @@ jobs:
               echo "" >> $GITHUB_STEP_SUMMARY
             fi
           fi
+      - name: Upload vulnxscan report
+        uses: actions/upload-artifact@v4
+        with:
+          name: vulnxscan-${{ github.job }}-${{ matrix.package }}
+          path: "*.vulnxscan.md"
+          if-no-files-found: ignore
+
+  vuln-report:
+    name: 🛡️
+    needs: [build-fuzzel-menus, build-fonts]
+    if: ${{ !cancelled() }}
+    uses: ./.github/workflows/vuln-report.yml
+    with:
+      title: "vulnxscan: Packages"
+    secrets: inherit
+    permissions:
+      contents: read
+      issues: write
+      id-token: write

@@ -1,0 +1,96 @@
+name: Vulnerability 🛡️ Report 🤖
+
+# Reusable: called at the end of the build workflows. Collects the
+# vulnxscan-* artifacts uploaded by the scan steps, files (or updates) one
+# issue per calling workflow, and has Claude comment on it with a summary
+# and suggested next steps.
+on:
+  workflow_call:
+    inputs:
+      title:
+        description: Issue title, one issue is kept open per title
+        required: true
+        type: string
+
+jobs:
+  report:
+    name: 🛡️
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: vulnxscan-*
+          path: vulnxscan
+          merge-multiple: true
+      - name: Open or update issue
+        id: issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ inputs.title }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          shopt -s nullglob
+          reports=(vulnxscan/*.vulnxscan.md)
+          if [ ${#reports[@]} -eq 0 ]; then
+            echo "No vulnerabilities reported."
+            exit 0
+          fi
+
+          {
+            echo "@claude new vulnerabilities were found by vulnxscan in [${{ github.workflow }} run ${{ github.run_id }}](${RUN_URL}) at ${{ github.sha }}."
+            echo ""
+            for report in "${reports[@]}"; do
+              echo "### $(basename "${report}" .vulnxscan.md)"
+              echo ""
+              cat "${report}"
+              echo ""
+            done
+          } > body.md
+
+          gh label create vulnxscan --color b60205 \
+            --description "Vulnerabilities found by vulnxscan" --force
+          number=$(gh issue list --label vulnxscan --state open \
+            --json number,title --jq ".[] | select(.title == \"${TITLE}\") | .number" | head -n 1)
+          if [ -n "${number}" ]; then
+            gh issue comment "${number}" --body-file body.md
+          else
+            url=$(gh issue create --title "${TITLE}" --label vulnxscan --body-file body.md)
+            number="${url##*/}"
+          fi
+          echo "number=${number}" >> "$GITHUB_OUTPUT"
+      # Comments made with GITHUB_TOKEN don't trigger other workflows, so the
+      # @claude mention above can't wake claude.yml; run the action directly.
+      - name: Claude summary
+        if: steps.issue.outputs.number != ''
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            REPO: ${{ github.repository }}
+            ISSUE NUMBER: ${{ steps.issue.outputs.number }}
+
+            This repository is a Nix flake configuring NixOS, nix-darwin and
+            Home Manager hosts. The vulnxscan (sbomnix) reports for this run are
+            in ./vulnxscan/*.vulnxscan.md and were posted as the latest comment
+            (or body) of the issue above; read them, and the issue with
+            `gh issue view`, for context.
+
+            Post ONE comment on the issue with `gh issue comment` containing:
+            1. A short summary: affected packages, the most severe CVEs, and
+               which hosts/configs pull them in.
+            2. Likely false positives or noise (e.g. version mismatches,
+               build-time only deps, CVEs already patched in nixpkgs).
+            3. Concrete next steps for this repo: e.g. wait for the nightly
+               flake.lock update, take the package from `pkgs.unstable`, add an
+               override in overlays/default.nix, or drop the package. Point
+               to the files to change.
+            Keep it concise. Do not open PRs or change any files.
+          claude_args: |
+            --allowedTools "Read,Glob,Grep,Bash(gh issue view:*),Bash(gh issue comment:*)"
