@@ -15,21 +15,11 @@ let
 in
 {
   imports = [
-    ./audio-production
-    ./game-dev
-    ./gitkraken
     ./graphics-production
-    ./heynote
-    ./internet-chat
-    ./joplin
-    ./meld
-    ./music
-    ./obs-studio
-    ./rhythmbox
+    ./signal-desktop
     ./ulauncher
     ./vaults
     ./vscode
-    ./zed-editor
   ];
   dconf.settings = lib.mkIf isLinux {
     "io/github/celluloid-player/celluloid" = with lib.hm.gvariant; {

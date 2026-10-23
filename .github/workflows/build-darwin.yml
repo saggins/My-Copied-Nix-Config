@@ -1,4 +1,4 @@
-name: Build 🏗️ VMs 👻
+name: Build 🏗️ Darwin 🍏
 on:
   push:
     branches:
@@ -15,32 +15,27 @@ permissions:
   id-token: write
 
 jobs:
-  build-vm:
-    name: 👻
-    runs-on: ubuntu-latest
+  build-darwin:
+    name: 🍏
+    runs-on: macos-latest
     strategy:
       matrix:
         host:
-          - 'crawler'
-          - 'dagger'
+          - dorado
         config-type:
-          - type: 'nixos'
-            path: '.#nixosConfigurations.{host}.config.system.build.toplevel'
+          - type: 'darwin'
+            path: '.#darwinConfigurations.{host}.config.system.build.toplevel'
           - type: 'home'
-            path: '.#homeConfigurations."martin@{host}".activationPackage'
+            path: '.#homeConfigurations."sangmin@{host}".activationPackage'
     steps:
     - uses: actions/checkout@v4
-    - uses: wimpysworld/nothing-but-nix@main
-      with:
-        hatchet-protocol: 'holster'
     - uses: DeterminateSystems/determinate-nix-action@v3
       with:
         extra-conf: |
           lazy-trees = true
     - uses: DeterminateSystems/flakehub-cache-action@v1
-    - name: ${{ matrix.host }}
+    - name: ${{ matrix.host }} - ${{ matrix.config-type.type }}
       run: |
-        sed -i 's|pico8|#pico8|' home-manager/_mixins/desktop/apps/game-dev/default.nix
         FLAKEREF="${{ matrix.config-type.path }}"
         FLAKEREF="${FLAKEREF/\{host\}/${{ matrix.host }}}"
         nix build ${FLAKEREF} -L

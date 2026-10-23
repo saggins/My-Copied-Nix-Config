@@ -1,6 +1,5 @@
 {
   config,
-  hostname,
   isInstall,
   isLaptop,
   lib,
@@ -9,10 +8,8 @@
 }:
 let
   isIntelCPU = config.hardware.cpu.intel.updateMicrocode;
-  isThinkpad = hostname == "tanis" || hostname == "sidious" || hostname == "shaa" || hostname == "atrius";
   usePowerProfiles =
-    config.programs.hyprland.enable
-    || config.services.desktopManager.pantheon.enable;
+    config.programs.hyprland.enable || config.services.desktopManager.pantheon.enable;
 in
 lib.mkIf isInstall {
   # Power Management strategy:
@@ -44,7 +41,7 @@ lib.mkIf isInstall {
           turbo = "auto";
         };
         battery = {
-          enable_thresholds = isThinkpad;
+          enable_thresholds = false;
           start_threshold = 15;
           stop_threshold = 85;
         };

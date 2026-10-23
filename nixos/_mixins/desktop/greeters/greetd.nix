@@ -1,8 +1,14 @@
-{ config, hostname, lib, pkgs, ... }:
+{
+  config,
+  hostname,
+  lib,
+  pkgs,
+  ...
+}:
 let
   sithLord =
-    (lib.strings.toUpper (builtins.substring 0 1 hostname)) +
-    (builtins.substring 1 (builtins.stringLength hostname) hostname);
+    (lib.strings.toUpper (builtins.substring 0 1 hostname))
+    + (builtins.substring 1 (builtins.stringLength hostname) hostname);
   # Reference for setting display configuration for cage
   # - https://github.com/cage-kiosk/cage/issues/304
   # - https://github.com/cage-kiosk/cage/issues/257
@@ -24,9 +30,6 @@ let
     fi
   '';
   wallpaperResolutions = {
-    vader = "2560x2880";
-    phasma = "3440x1440";
-    tanis = "1920x1200";
     default = "1920x1080";
   };
   wallpaperResolution = wallpaperResolutions.${hostname} or wallpaperResolutions.default;
@@ -34,20 +37,6 @@ let
   # - Order is important
   # - The last enabled output is what cage will use via `-m last`
   kanshiProfiles = {
-    phasma = ''
-      profile {
-        output DP-2 disable
-        output HDMI-A-1 disable
-        output DP-1 enable mode 3440x1440@100Hz position 0,1280 scale 1
-      }
-    '';
-    vader = ''
-      profile {
-        output DP-3 disable
-        output DP-2 disable
-        output DP-1 enable mode 2560x2880@60Hz position 0,0 scale 1
-      }
-    '';
     default = "";
   };
 in
@@ -74,8 +63,14 @@ in
           fit = "Cover";
         };
         commands = {
-          reboot = [ "/run/current-system/sw/bin/systemctl" "reboot" ];
-          poweroff = [ "/run/current-system/sw/bin/systemctl" "poweroff" ];
+          reboot = [
+            "/run/current-system/sw/bin/systemctl"
+            "reboot"
+          ];
+          poweroff = [
+            "/run/current-system/sw/bin/systemctl"
+            "poweroff"
+          ];
         };
         GTK = lib.mkForce {
           application_prefer_dark_theme = true;

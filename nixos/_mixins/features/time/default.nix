@@ -1,11 +1,10 @@
 {
-  hostname,
   isLightweight,
   lib,
   ...
 }:
 let
-  isServer = hostname == "malak" || hostname == "revan" || isLightweight;
+  isServer = isLightweight;
   useGeoclue = !isServer;
 in
 {

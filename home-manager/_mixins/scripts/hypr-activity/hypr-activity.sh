@@ -2,7 +2,6 @@
 
 set +e  # Disable errexit
 set +u  # Disable nounset
-HOSTNAME=$(hostname -s)
 if [ -x "$HOME/.nix-profile/bin/hyprctl" ]; then
     HYPRCTL="$HOME/.nix-profile/bin/hyprctl"
 elif [ -x /run/current-system/sw/bin/hyprctl ]; then
@@ -72,9 +71,6 @@ function activity_gsd() {
     start_app "gitkraken --no-show-splash-screen" 5 "title: GitKraken Desktop"
     start_app joplin-desktop 6 "class: @joplin/app-desktop"
     start_app heynote 6 "class: Heynote"
-    if [ "$HOSTNAME" == "phasma" ] || [ "$HOSTNAME" == "vader" ]; then
-        start_app "obs --disable-shutdown-check --collection VirtualCam --profile VirtualCam --scene Work-VirtualCam --startvirtualcam" 7 "class: com.obsproject.Studio"
-    fi
     start_app Cider 8 "class: Cider"
 }
 
@@ -85,9 +81,6 @@ function activity_linuxmatters() {
         -P linuxmatters-stage \
         -no-remote \
         --new-window https://github.com/restfulmedia/linuxmatters_backstage" 9 "title: restfulmedia/linuxmatters_backstage"
-    if [ "$HOSTNAME" == "phasma" ] || [ "$HOSTNAME" == "vader" ]; then
-        start_app "obs --disable-shutdown-check --collection VirtualCam --profile VirtualCam --scene Podcast-VirtualCam --startvirtualcam" 9 "class: com.obsproject.Studio"
-    fi
     $HYPRCTL dispatch workspace 9 &>/dev/null
     firefox -CreateProfile linuxmatters-studio
     start_app "firefox \
@@ -115,16 +108,6 @@ function activity_wimpysworld() {
         --new-tab https://wimpysworld.live \
         --new-tab https://streamelements.com \
         --new-tab https://botrix.live" 9 "title: Twitch — Mozilla Firefox"
-    case "$HOSTNAME" in
-        phasma)
-            start_app discord 9 " - Discord"
-            start_app chatterino 7 "chatterino"
-            ;;
-        vader)
-            start_app discord 9 " - Discord"
-            start_app chatterino 9 "chatterino"
-            ;;
-    esac
     # Workspace 10
     firefox -CreateProfile wimpysworld-stage
     start_app "firefox \

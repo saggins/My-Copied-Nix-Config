@@ -93,59 +93,10 @@
           platform = "aarch64-darwin";
           desktop = "aqua";
         };
-        # Workstations
-        "martin@phasma" = helper.mkHome {
-          hostname = "phasma";
-          desktop = "hyprland";
-        };
-        "martin@vader" = helper.mkHome {
-          hostname = "vader";
-          desktop = "hyprland";
-        };
-        "martin@shaa" = helper.mkHome {
-          hostname = "shaa";
-          desktop = "hyprland";
-        };
-        "martin@atrius" = helper.mkHome {
-          hostname = "atrius";
-          desktop = "hyprland";
-        };
-        "martin@tanis" = helper.mkHome {
-          hostname = "tanis";
-          desktop = "hyprland";
-        };
-        "martin@momin" = helper.mkHome {
-          hostname = "momin";
-          platform = "aarch64-darwin";
-          desktop = "aqua";
-        };
-        "martin@krall" = helper.mkHome {
-          hostname = "krall";
-          platform = "x86_64-darwin";
-          desktop = "aqua";
-        };
-        # palpatine/sidious are dual boot hosts, WSL2/Ubuntu and NixOS respectively.
-        "martin@palpatine" = helper.mkHome { hostname = "palpatine"; };
-        "martin@sidious" = helper.mkHome {
-          hostname = "sidious";
-          desktop = "pantheon";
-        };
-        # Servers
-        "martin@malak" = helper.mkHome { hostname = "malak"; };
-        "martin@revan" = helper.mkHome { hostname = "revan"; };
         # Steam Deck
         "deck@steamdeck" = helper.mkHome {
           hostname = "steamdeck";
           username = "deck";
-        };
-        # VMs
-        "martin@blackace" = helper.mkHome { hostname = "blackace"; };
-        "martin@defender" = helper.mkHome { hostname = "defender"; };
-        "martin@fighter" = helper.mkHome { hostname = "fighter"; };
-        "martin@crawler" = helper.mkHome { hostname = "crawler"; };
-        "martin@dagger" = helper.mkHome {
-          hostname = "dagger";
-          desktop = "pantheon";
         };
       };
       nixosConfigurations = {
@@ -184,39 +135,7 @@
           hostname = "bastion";
           username = "sangmin";
         };
-        phasma = helper.mkNixos {
-          hostname = "phasma";
-          desktop = "hyprland";
-        };
-        vader = helper.mkNixos {
-          hostname = "vader";
-          desktop = "hyprland";
-        };
-        shaa = helper.mkNixos {
-          hostname = "shaa";
-          desktop = "hyprland";
-        };
-        atrius = helper.mkNixos {
-          hostname = "atrius";
-          desktop = "hyprland";
-        };
-        tanis = helper.mkNixos {
-          hostname = "tanis";
-          desktop = "hyprland";
-        };
-        sidious = helper.mkNixos {
-          hostname = "sidious";
-          desktop = "pantheon";
-        };
-        # Servers
-        malak = helper.mkNixos { hostname = "malak"; };
-        revan = helper.mkNixos { hostname = "revan"; };
         # VMs
-        crawler = helper.mkNixos { hostname = "crawler"; };
-        dagger = helper.mkNixos {
-          hostname = "dagger";
-          desktop = "pantheon";
-        };
       };
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config
       #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel

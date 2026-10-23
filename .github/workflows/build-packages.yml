@@ -79,7 +79,6 @@ jobs:
     strategy:
       matrix:
         package:
-          - caddy
           - linuxPackages_6_12.mwprocapture
     steps:
       - uses: actions/checkout@v4
@@ -93,7 +92,7 @@ jobs:
       - uses: DeterminateSystems/flakehub-cache-action@v1
       - name: ${{ matrix.package }}
         run: |
-            nix build .#nixosConfigurations.vader.pkgs.${{ matrix.package }} -L
+            nix build .#nixosConfigurations.blackchungus.pkgs.${{ matrix.package }} -L
       - name: sbomnix
         run: |
           name="${{ github.job }}-${{ matrix.package }}"
@@ -133,7 +132,6 @@ jobs:
           - joplin-desktop
           - owncast
           - station
-          - wavebox
     steps:
       - uses: actions/checkout@v4
       - uses: wimpysworld/nothing-but-nix@main
@@ -147,52 +145,10 @@ jobs:
       - name: ${{ matrix.package }}
         run: |
           if ! nix eval ".#${{ matrix.package }}.meta.license.spdxId" --raw 2>/dev/null; then
-            nix build .#nixosConfigurations.vader.pkgs.${{ matrix.package }} -L
+            nix build .#nixosConfigurations.blackchungus.pkgs.${{ matrix.package }} -L
           else
             nix build .#${{ matrix.package }} -L
           fi
-      - name: sbomnix
-        run: |
-          name="${{ github.job }}-${{ matrix.package }}"
-          nix run github:tiiuae/sbomnix#sbomnix -- \
-            --csv "${name}.sbom.csv" \
-            --cdx "${name}.sbom.cdx.json" \
-            --spdx "${name}.sbom.spdx.json" \
-            ./result
-      - name: vulnxscan
-        run: |
-          name="${{ github.job }}-${{ matrix.package }}"
-          nix run github:tiiuae/sbomnix#vulnxscan -- \
-            --triage \
-            --sbom "${name}.sbom.cdx.json"
-          if [ -e vulns.triage.csv ]; then
-            grep -v -E "not_vulnerable|fix_not_available" vulns.triage.csv > cve.csv
-            if [ $(wc -l < cve.csv) -gt 1 ]; then
-              nix run github:nixos/nixpkgs#csv2md -- --columns "0-7,9" cve.csv | tee "${name}.vulnxscan.md"
-              echo "### Vulnerability Scan Results for ${{ matrix.package }}" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              cat "${name}.vulnxscan.md" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-            fi
-          fi
-
-  build-darwin-apps:
-    name: 🍏
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        package:
-          - wavebox
-    steps:
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/determinate-nix-action@v3
-        with:
-          extra-conf: |
-            lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
-      - name: ${{ matrix.package }}
-        run: |
-          nix build .#darwinConfigurations.momin.pkgs.${{ matrix.package }} -L
       - name: sbomnix
         run: |
           name="${{ github.job }}-${{ matrix.package }}"
