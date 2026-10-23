@@ -8,7 +8,7 @@
   ];
   nix.settings.extra-trusted-public-keys = [
     "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-    "workhorse.comet-court.ts.net-1:workhorse.comet-court.ts.net-1:Ykw9ZyxGeY0E7Wl3DcI5SQCvK7pnBNz8YJVIG/m2Pgg="
+    "workhorse.comet-court.ts.net-1:Ykw9ZyxGeY0E7Wl3DcI5SQCvK7pnBNz8YJVIG/m2Pgg="
   ];
   # Don't stall builds when workhorse is offline; Nix moves on to the next cache.
   nix.settings.connect-timeout = 5;
