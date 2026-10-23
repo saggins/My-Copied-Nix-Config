@@ -29,7 +29,6 @@ in
     inputs.nix-index-database.homeModules.nix-index
     ./_mixins/features
   ]
-  ++ lib.optional platformIsLinux inputs.vscode-server.nixosModules.home
   ++ [
     ./_mixins/scripts
     ./_mixins/services

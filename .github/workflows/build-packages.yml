@@ -33,7 +33,7 @@ jobs:
       # GC root so the latest build survives garbage collection on workhorse
       OUT_LINK: /nix/var/nix/gcroots/ci/${{ matrix.package }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: ${{ matrix.package }}
         run: |
           nix build .#${{ matrix.package }}.packages.x86_64-linux.default -L --out-link "${OUT_LINK}"
@@ -87,7 +87,7 @@ jobs:
       # GC root so the latest build survives garbage collection on workhorse
       OUT_LINK: /nix/var/nix/gcroots/ci/${{ matrix.package }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: ${{ matrix.package }}
         run: |
           nix build .#${{ matrix.package }} -L --out-link "${OUT_LINK}"
