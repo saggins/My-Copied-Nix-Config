@@ -4,6 +4,7 @@
     ./ollama
     ./calendar
     ./nix-serve
+    ./github-runner
     ./ssh
     ./tailscale
     ./unifi

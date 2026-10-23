@@ -90,9 +90,6 @@ in
   };
 
   networking = {
-    extraHosts = ''
-      10.0.0.125 binarycache.sagg.in
-    '';
     firewall = {
       enable = true;
       allowedTCPPorts =

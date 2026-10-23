@@ -1,13 +1,8 @@
 name: Build 🏗️ Packages ️📦
 
+# No pull_request trigger: these jobs run on the self-hosted workhorse runner,
+# and this repo is public, so fork PRs must never be able to run code there.
 on:
-  pull_request:
-    paths:
-      - 'flake.nix'
-      - 'flake.lock'
-      - 'lib/**'
-      - 'pkgs/**'
-      - 'overlays/**'
   push:
     branches:
       - main
@@ -20,34 +15,28 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   build-fuzzel-menus:
     name: 📄
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, workhorse]
     strategy:
       matrix:
         package:
           - bzmenu
           - iwmenu
+    env:
+      # GC root so the latest build survives garbage collection on workhorse
+      OUT_LINK: /nix/var/nix/gcroots/ci/${{ matrix.package }}
     steps:
       - uses: actions/checkout@v4
-      - uses: wimpysworld/nothing-but-nix@main
-        with:
-          hatchet-protocol: 'holster'
-      - uses: DeterminateSystems/determinate-nix-action@v3
-        with:
-          extra-conf: |
-            lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
       - name: ${{ matrix.package }}
         run: |
-          nix build .#${{ matrix.package }}.packages.x86_64-linux.default -L
+          nix build .#${{ matrix.package }}.packages.x86_64-linux.default -L --out-link "${OUT_LINK}"
       - name: sbomnix
         run: |
           name="${{ github.job }}-${{ matrix.package }}"
@@ -55,108 +44,7 @@ jobs:
             --csv "${name}.sbom.csv" \
             --cdx "${name}.sbom.cdx.json" \
             --spdx "${name}.sbom.spdx.json" \
-            ./result
-      - name: vulnxscan
-        run: |
-          name="${{ github.job }}-${{ matrix.package }}"
-          nix run github:tiiuae/sbomnix#vulnxscan -- \
-            --triage \
-            --sbom "${name}.sbom.cdx.json"
-          if [ -e vulns.triage.csv ]; then
-            grep -v -E "not_vulnerable|fix_not_available" vulns.triage.csv > cve.csv
-            if [ $(wc -l < cve.csv) -gt 1 ]; then
-              nix run github:nixos/nixpkgs#csv2md -- --columns "0-7,9" cve.csv | tee "${name}.vulnxscan.md"
-              echo "### Vulnerability Scan Results for ${{ matrix.package }}" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              cat "${name}.vulnxscan.md" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-            fi
-          fi
-
-  build-overlays:
-    name: 🧥
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package:
-          - linuxPackages_6_12.mwprocapture
-    steps:
-      - uses: actions/checkout@v4
-      - uses: wimpysworld/nothing-but-nix@main
-        with:
-          hatchet-protocol: 'holster'
-      - uses: DeterminateSystems/determinate-nix-action@v3
-        with:
-          extra-conf: |
-            lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
-      - name: ${{ matrix.package }}
-        run: |
-            nix build .#nixosConfigurations.blackchungus.pkgs.${{ matrix.package }} -L
-      - name: sbomnix
-        run: |
-          name="${{ github.job }}-${{ matrix.package }}"
-          nix run github:tiiuae/sbomnix#sbomnix -- \
-            --csv "${name}.sbom.csv" \
-            --cdx "${name}.sbom.cdx.json" \
-            --spdx "${name}.sbom.spdx.json" \
-            ./result
-      - name: vulnxscan
-        run: |
-          name="${{ github.job }}-${{ matrix.package }}"
-          nix run github:tiiuae/sbomnix#vulnxscan -- \
-            --triage \
-            --sbom "${name}.sbom.cdx.json"
-          if [ -e vulns.triage.csv ]; then
-            grep -v -E "not_vulnerable|fix_not_available" vulns.triage.csv > cve.csv
-            if [ $(wc -l < cve.csv) -gt 1 ]; then
-              nix run github:nixos/nixpkgs#csv2md -- --columns "0-7,9" cve.csv | tee "${name}.vulnxscan.md"
-              echo "### Vulnerability Scan Results for ${{ matrix.package }}" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              cat "${name}.vulnxscan.md" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-            fi
-          fi
-
-  build-linux-apps:
-    name: 🐧
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package:
-          - cider
-          - defold
-          - gitkraken
-          - gotosocial
-          - halloy
-          - joplin-desktop
-          - owncast
-          - station
-    steps:
-      - uses: actions/checkout@v4
-      - uses: wimpysworld/nothing-but-nix@main
-        with:
-          hatchet-protocol: 'holster'
-      - uses: DeterminateSystems/determinate-nix-action@v3
-        with:
-          extra-conf: |
-            lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
-      - name: ${{ matrix.package }}
-        run: |
-          if ! nix eval ".#${{ matrix.package }}.meta.license.spdxId" --raw 2>/dev/null; then
-            nix build .#nixosConfigurations.blackchungus.pkgs.${{ matrix.package }} -L
-          else
-            nix build .#${{ matrix.package }} -L
-          fi
-      - name: sbomnix
-        run: |
-          name="${{ github.job }}-${{ matrix.package }}"
-          nix run github:tiiuae/sbomnix#sbomnix -- \
-            --csv "${name}.sbom.csv" \
-            --cdx "${name}.sbom.cdx.json" \
-            --spdx "${name}.sbom.spdx.json" \
-            ./result
+            "${OUT_LINK}"
       - name: vulnxscan
         run: |
           name="${{ github.job }}-${{ matrix.package }}"
@@ -176,13 +64,11 @@ jobs:
 
   build-fonts:
     name: 🔤
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, workhorse]
     strategy:
       matrix:
         package:
-          - nerd-font-patcher
           - bebas-neue-2014-font
-          - bebas-neue-2018-font
           - bebas-neue-pro-font
           - bebas-neue-rounded-font
           - bebas-neue-semi-rounded-font
@@ -197,19 +83,14 @@ jobs:
           - poppins-font
           - spaceport-2006-font
           - zx-spectrum-7-font
+    env:
+      # GC root so the latest build survives garbage collection on workhorse
+      OUT_LINK: /nix/var/nix/gcroots/ci/${{ matrix.package }}
     steps:
       - uses: actions/checkout@v4
-      - uses: wimpysworld/nothing-but-nix@main
-        with:
-          hatchet-protocol: 'holster'
-      - uses: DeterminateSystems/determinate-nix-action@v3
-        with:
-          extra-conf: |
-            lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
       - name: ${{ matrix.package }}
         run: |
-          nix build .#${{ matrix.package }} -L
+          nix build .#${{ matrix.package }} -L --out-link "${OUT_LINK}"
       - name: sbomnix
         run: |
           name="${{ github.job }}-${{ matrix.package }}"
@@ -217,68 +98,7 @@ jobs:
             --csv "${name}.sbom.csv" \
             --cdx "${name}.sbom.cdx.json" \
             --spdx "${name}.sbom.spdx.json" \
-            ./result
-      - name: vulnxscan
-        run: |
-          name="${{ github.job }}-${{ matrix.package }}"
-          nix run github:tiiuae/sbomnix#vulnxscan -- \
-            --triage \
-            --sbom "${name}.sbom.cdx.json"
-          if [ -e vulns.triage.csv ]; then
-            grep -v -E "not_vulnerable|fix_not_available" vulns.triage.csv > cve.csv
-            if [ $(wc -l < cve.csv) -gt 1 ]; then
-              nix run github:nixos/nixpkgs#csv2md -- --columns "0-7,9" cve.csv | tee "${name}.vulnxscan.md"
-              echo "### Vulnerability Scan Results for ${{ matrix.package }}" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              cat "${name}.vulnxscan.md" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-            fi
-          fi
-
-  build-obs-plugins:
-    name: 🔌
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        package:
-          - obs-aitum-multistream
-          - obs-browser-transition
-          - obs-dir-watch-media
-          - obs-dvd-screensaver
-          - obs-markdown
-          - obs-media-controls
-          - obs-noise
-          - obs-recursion-effect
-          - obs-replay-source
-          - obs-retro-effects
-          - obs-rgb-levels
-          - obs-scene-as-transition
-          - obs-stroke-glow-shadow
-          - obs-urlsource
-          - obs-vertical-canvas
-          - obs-vnc
-          - pixel-art
-    steps:
-      - uses: actions/checkout@v4
-      - uses: wimpysworld/nothing-but-nix@main
-        with:
-          hatchet-protocol: 'holster'
-      - uses: DeterminateSystems/determinate-nix-action@v3
-        with:
-          extra-conf: |
-            lazy-trees = true
-      - uses: DeterminateSystems/flakehub-cache-action@v1
-      - name: ${{ matrix.package }}
-        run: |
-          nix build .#${{ matrix.package }} -L
-      - name: sbomnix
-        run: |
-          name="${{ github.job }}-${{ matrix.package }}"
-          nix run github:tiiuae/sbomnix#sbomnix -- \
-            --csv "${name}.sbom.csv" \
-            --cdx "${name}.sbom.cdx.json" \
-            --spdx "${name}.sbom.spdx.json" \
-            ./result
+            "${OUT_LINK}"
       - name: vulnxscan
         run: |
           name="${{ github.job }}-${{ matrix.package }}"
