@@ -4,7 +4,7 @@
     portal = {
       # Add xset to satisfy xdg-screensaver requirements
       configPackages = [
-        pkgs.xorg.xset
+        pkgs.xset
       ] ++ lib.optionals (desktop == "hyprland") [
         pkgs.hyprland
       ];
