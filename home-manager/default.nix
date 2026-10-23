@@ -713,7 +713,6 @@ in
         };
       };
     };
-    tmate.enable = true;
     yazi = {
       enable = true;
       # Keep legacy wrapper name (stateVersion < 26.05 default changed "yy" -> "y").
