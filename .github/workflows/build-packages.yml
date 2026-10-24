@@ -1,9 +1,19 @@
 name: Build 🏗️ Packages ️📦
 
-# No pull_request trigger: these jobs run on the self-hosted workhorse runner,
-# and this repo is public, so fork PRs must never be able to run code there.
+# These jobs run on the self-hosted workhorse runner and this repo is public,
+# so pull_request builds are limited to the lock updater's PR (see the job
+# guards), and fork PRs need approval before any workflow runs.
 on:
   push:
+    branches:
+      - main
+    paths:
+      - 'flake.nix'
+      - 'flake.lock'
+      - 'lib/**'
+      - 'pkgs/**'
+      - 'overlays/**'
+  pull_request:
     branches:
       - main
     paths:
@@ -23,6 +33,8 @@ permissions:
 jobs:
   build-fuzzel-menus:
     name: 📄
+    # Only the lock updater's PR, never forks: these run on the self-hosted runner
+    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'update_flake_lock_action')
     runs-on: [self-hosted, workhorse]
     strategy:
       matrix:
@@ -70,6 +82,8 @@ jobs:
 
   build-fonts:
     name: 🔤
+    # Only the lock updater's PR, never forks: these run on the self-hosted runner
+    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'update_flake_lock_action')
     runs-on: [self-hosted, workhorse]
     strategy:
       matrix:
@@ -131,7 +145,8 @@ jobs:
   vuln-report:
     name: 🛡️
     needs: [build-fuzzel-menus, build-fonts]
-    if: ${{ !cancelled() }}
+    # Skip for lock PR builds; report once the update lands on main
+    if: ${{ !cancelled() && github.ref == 'refs/heads/main' }}
     uses: ./.github/workflows/vuln-report.yml
     with:
       title: "vulnxscan: Packages"

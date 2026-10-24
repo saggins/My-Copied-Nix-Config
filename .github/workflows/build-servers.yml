@@ -5,6 +5,11 @@ on:
       - main
     paths:
       - 'flake.lock'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'flake.lock'
   workflow_dispatch:
 
 concurrency:
@@ -16,6 +21,8 @@ permissions:
 jobs:
   build-server:
     name: 💁
+    # Only the lock updater's PR, never forks: these run on the self-hosted runner
+    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'update_flake_lock_action')
     # Builds land in workhorse's /nix/store, served to the other hosts by nix-serve
     runs-on: [self-hosted, workhorse]
     strategy:
@@ -72,7 +79,8 @@ jobs:
   vuln-report:
     name: 🛡️
     needs: [build-server]
-    if: ${{ !cancelled() }}
+    # Skip for lock PR builds; report once the update lands on main
+    if: ${{ !cancelled() && github.ref == 'refs/heads/main' }}
     uses: ./.github/workflows/vuln-report.yml
     with:
       title: "vulnxscan: Servers"

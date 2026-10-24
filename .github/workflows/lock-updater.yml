@@ -25,6 +25,9 @@ jobs:
             lazy-trees = true
       - uses: DeterminateSystems/update-flake-lock@v25
         with:
+          # A PAT, not GITHUB_TOKEN: PRs opened with GITHUB_TOKEN don't trigger
+          # other workflows, and the builds should run on this PR
+          token: ${{ secrets.FLAKE_LOCK_TOKEN }}
           pr-title: "chore: update flake.lock"
           # Labels to be set on the PR
           pr-labels: |
