@@ -72,7 +72,8 @@ jobs:
   vuln-report:
     name: 🛡️
     needs: [build-darwin]
-    if: ${{ !cancelled() }}
+    # Lock PR builds run on their branch; only report once they land on main
+    if: ${{ !cancelled() && github.ref == 'refs/heads/main' }}
     uses: ./.github/workflows/vuln-report.yml
     with:
       title: "vulnxscan: Darwin"

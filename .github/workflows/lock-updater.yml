@@ -11,6 +11,7 @@ jobs:
     name: Flake Lock Updater
     runs-on: ubuntu-latest
     permissions:
+      actions: write
       contents: write
       id-token: write
       pull-requests: write
@@ -24,9 +25,23 @@ jobs:
           extra-conf: |
             lazy-trees = true
       - uses: DeterminateSystems/update-flake-lock@v25
+        id: update
         with:
           pr-title: "chore: update flake.lock"
           # Labels to be set on the PR
           pr-labels: |
             dependencies
             automated
+      # PRs opened with GITHUB_TOKEN don't trigger other workflows, and the
+      # builds have no pull_request trigger anyway (self-hosted runner, public
+      # repo). workflow_dispatch is exempt from that rule, so build the lock
+      # PR's branch that way.
+      - name: Build lock PR
+        if: steps.update.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          for workflow in build-workstations.yml build-servers.yml build-darwin.yml build-packages.yml; do
+            gh workflow run "${workflow}" --ref update_flake_lock_action
+          done
