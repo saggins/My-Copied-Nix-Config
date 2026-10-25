@@ -50,7 +50,7 @@ let
     name = "tailscale-check";
     runtimeInputs = with pkgs; [
       jq
-      tailscale
+      unstable.tailscale
     ];
     text = builtins.readFile ./tailscale-check.sh;
   };
@@ -59,7 +59,7 @@ let
     runtimeInputs = with pkgs; [
       jq
       notify-desktop
-      tailscale
+      unstable.tailscale
     ];
     text = builtins.readFile ./tailscale-toggle.sh;
   };

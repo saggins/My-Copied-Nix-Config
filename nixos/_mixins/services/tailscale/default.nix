@@ -27,6 +27,8 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
 
   services.tailscale = {
     enable = true;
+    # Stable lags several releases behind; track unstable for security fixes
+    package = pkgs.unstable.tailscale;
     extraUpFlags = [
       "--operator=${username}"
     ]
