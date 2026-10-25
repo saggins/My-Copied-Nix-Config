@@ -1,0 +1,13 @@
+--- a/lib/NOM/Parser/JSON.hs	2026-10-25 10:00:22.891750546 -0700
++++ b/lib/NOM/Parser/JSON.hs	2026-10-25 10:00:22.914750860 -0700
+@@ -45,7 +45,9 @@
+   110 -> pure PostBuildHookType
+   111 -> pure BuildWaitingType
+   112 -> pure FetchTreeType
+-  other -> fail ("invalid activity type: " <> show other)
++  -- Newer Nix (e.g. Determinate) emits activity types nom does not know yet
++  -- (10113 = FileTransferAttempt); treat them as unknown instead of failing.
++  _ -> pure UnknownType
+ 
+ parseAction :: JSON.Decoder NixJSONMessage
+ parseAction = JSON.object $ do
