@@ -127,7 +127,11 @@
   security.pam.services.sudo_local.touchIdAuth = true;
 
   services = {
-    tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      # Stable lags several releases behind; track unstable for security fixes
+      package = pkgs.unstable.tailscale;
+    };
   };
 
   system = {
