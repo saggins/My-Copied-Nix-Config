@@ -22,4 +22,4 @@ jobs:
         with:
           extra-conf: |
             lazy-trees = true
-      - uses: DeterminateSystems/flake-checker-action@v9
+      - uses: DeterminateSystems/flake-checker-action@v14
