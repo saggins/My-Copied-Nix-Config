@@ -70,7 +70,7 @@ jobs:
           fi
         fi
     - name: Upload vulnxscan report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: vulnxscan-${{ matrix.host }}-${{ matrix.config-type.type }}
         path: "*.vulnxscan.md"
