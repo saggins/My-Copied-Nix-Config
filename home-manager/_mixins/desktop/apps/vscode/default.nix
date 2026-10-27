@@ -63,8 +63,6 @@ lib.mkIf (lib.elem username installFor) {
           vscode-marketplace.evan-buss.font-switcher
           vscode-marketplace.fill-labs.dependi
           vscode-marketplace.foxundermoon.shell-format
-          vscode-marketplace.github.copilot
-          vscode-marketplace.github.copilot-chat
           vscode-marketplace.github.vscode-github-actions
           vscode-marketplace.github.vscode-pull-request-github
           vscode-marketplace.golang.go
