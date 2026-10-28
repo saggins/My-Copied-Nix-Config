@@ -38,7 +38,7 @@ jobs:
       # GC root so the latest build survives garbage collection on workhorse
       OUT_LINK: /nix/var/nix/gcroots/ci/${{ matrix.host }}-${{ matrix.config-type.type }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
     - name: ${{ matrix.host }} - ${{ matrix.config-type.type }}
       run: |
         FLAKEREF="${{ matrix.config-type.path }}"
