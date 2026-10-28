@@ -23,7 +23,7 @@ jobs:
         with:
           extra-conf: |
             lazy-trees = true
-      - uses: DeterminateSystems/update-flake-lock@v25
+      - uses: DeterminateSystems/update-flake-lock@v29
         with:
           # A PAT, not GITHUB_TOKEN: PRs opened with GITHUB_TOKEN don't trigger
           # other workflows, and the builds should run on this PR
