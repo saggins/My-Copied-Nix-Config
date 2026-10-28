@@ -74,7 +74,7 @@ jobs:
             fi
           fi
       - name: Upload vulnxscan report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: vulnxscan-${{ github.job }}-${{ matrix.package }}
           path: "*.vulnxscan.md"
@@ -136,7 +136,7 @@ jobs:
             fi
           fi
       - name: Upload vulnxscan report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: vulnxscan-${{ github.job }}-${{ matrix.package }}
           path: "*.vulnxscan.md"
