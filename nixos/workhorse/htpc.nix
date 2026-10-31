@@ -43,6 +43,10 @@ let
           exec $(sed -n 's/^Exec=//p' ${plasmaDesktop})
           ;;
         *)
+          # Start the --mangoapp overlay hidden; Steam rewrites this file when
+          # its performance overlay level changes.
+          export MANGOHUD_CONFIGFILE="''${XDG_RUNTIME_DIR:-/tmp}/htpc-mangohud.conf"
+          echo no_display > "$MANGOHUD_CONFIGFILE"
           exec /run/current-system/sw/bin/steam-gamescope
           ;;
       esac
@@ -115,6 +119,10 @@ in
         (lib.concatStringsSep "," preferredOutputs)
         "--xwayland-count"
         "2"
+        # Pascal + proprietary driver blanks the whole screen whenever the
+        # cursor is hidden, which gamepadui always does. Running mangoapp
+        # keeps it compositing. https://github.com/ValveSoftware/gamescope/issues/1252
+        "--mangoapp"
       ];
       steamArgs = [
         "-steamos3"
