@@ -204,6 +204,8 @@ in
 
   environment.systemPackages = steamosHelpers ++ [
     returnToGamingMode
+    # YouTube's TV UI; add it to Steam as a non-Steam game from desktop mode.
+    pkgs.unstable.vacuum-tube
     kodi
   ];
 }
