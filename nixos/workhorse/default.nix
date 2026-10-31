@@ -36,6 +36,10 @@
     # initrd so stage-1 can open the bcachefs root.
     extraModulePackages = [ config.boot.kernelPackages.bcachefs ];
     initrd.supportedFilesystems = [ "bcachefs" ];
+    # Firmware advertises a TPM2 ACPI table but tpm_tis fails to probe it, so
+    # /dev/tpm0 never appears and systemd-tpm2-generator makes boot wait 90s
+    # for it (initrd + stage 2). Nothing here uses the TPM.
+    kernelParams = [ "systemd.tpm2_wait=0" ];
   };
 
   nix.settings.trusted-users = [ "sangmin" ];
