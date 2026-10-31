@@ -1,4 +1,5 @@
 {
+  inputs,
   lib,
   pkgs,
   username,
@@ -108,7 +109,23 @@ let
 in
 {
   # Steam itself, Remote Play firewall and DualSense/DS4 touchpad udev rules.
-  imports = [ ../_mixins/desktop/apps/steam ];
+  # Jovian is imported only for decky-loader; jovian.steam stays off so it
+  # doesn't replace the htpc session above.
+  imports = [
+    ../_mixins/desktop/apps/steam
+    inputs.jovian.nixosModules.default
+  ];
+
+  jovian.decky-loader = {
+    enable = true;
+    # Loader runs as root; plugins drop to this user.
+    user = username;
+  };
+
+  # Decky injects into Steam's UI over CEF remote debugging.
+  systemd.tmpfiles.rules = [
+    "f /home/${username}/.local/share/Steam/.cef-enable-remote-debugging 0644 ${username} users -"
+  ];
 
   programs.steam = {
     extraPackages = steamosHelpers;

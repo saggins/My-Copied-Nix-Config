@@ -18,6 +18,9 @@
     bzmenu.inputs.nixpkgs.follows = "nixpkgs";
     iwmenu.url = "https://github.com/e-tho/iwmenu/archive/refs/tags/v0.2.0.tar.gz";
     iwmenu.inputs.nixpkgs.follows = "nixpkgs";
+    # Only used for jovian.decky-loader; the module builds against our own pkgs.
+    jovian.url = "github:Jovian-Experiments/Jovian-NixOS";
+    jovian.inputs.nixpkgs.follows = "nixpkgs";
     catppuccin.url = "github:catppuccin/nix";
     catppuccin.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "https://flakehub.com/f/nix-community/disko/1.12.0.tar.gz";
