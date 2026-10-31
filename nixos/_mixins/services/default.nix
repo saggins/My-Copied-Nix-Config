@@ -11,5 +11,6 @@
     ./actual-server
     ./garage
     ./suwayomi
+    ./sjsufood
   ];
 }
