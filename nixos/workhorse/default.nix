@@ -10,8 +10,17 @@
   imports = [
     inputs.nixos-hardware.nixosModules.dell-precision-7520
     ./disks.nix
+    ./thermal.nix
   ];
-  hardware.nvidia.nvidiaSettings = lib.mkForce true;
+  hardware.nvidia = {
+    nvidiaSettings = lib.mkForce true;
+    # The Quadro P3000 (Pascal) was dropped after the 580 branch; nixos-hardware
+    # pins `stable`, which ignores this GPU.
+    package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    # Headless: keep the driver initialised so nvidia-smi doesn't cold-start the
+    # GPU every time the fan controller polls it.
+    nvidiaPersistenced = true;
+  };
   services.logind.settings.Login.HandleLidSwitch = "ignore";
 
   boot = {
@@ -29,5 +38,5 @@
     initrd.supportedFilesystems = [ "bcachefs" ];
   };
 
-  nix.settings.trusted-users = ["sangmin"];
+  nix.settings.trusted-users = [ "sangmin" ];
 }
