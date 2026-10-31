@@ -100,6 +100,15 @@ let
     categories = [ "Game" ];
   };
 
+  # X11 build: gamescope only hosts Xwayland clients. Add it to Steam from
+  # desktop mode ("Add a Non-Steam Game") to launch it from gamepadui.
+  kodi = pkgs.kodi.withPackages (
+    kodiPkgs: with kodiPkgs; [
+      inputstream-adaptive
+      joystick
+    ]
+  );
+
   steamosHelpers = [
     steamos-session-select
     steamos-update
@@ -159,6 +168,15 @@ in
       wireplumber.enable = true;
     };
   };
+  # Kodi remote apps (Kore, Yatse): web server / JSON-RPC over HTTP, JSON-RPC
+  # websocket notifications, and the EventServer for button input.
+  networking.firewall = {
+    allowedTCPPorts = [
+      8080
+      9090
+    ];
+    allowedUDPPorts = [ 9777 ];
+  };
   security.rtkit.enable = true;
   programs.kde-pim.enable = false;
 
@@ -188,5 +206,6 @@ in
     returnToGamingMode
     # YouTube's TV UI; add it to Steam as a non-Steam game from desktop mode.
     pkgs.unstable.vacuum-tube
+    kodi
   ];
 }
