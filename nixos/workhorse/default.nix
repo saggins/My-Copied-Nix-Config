@@ -10,6 +10,7 @@
   imports = [
     inputs.nixos-hardware.nixosModules.dell-precision-7520
     ./disks.nix
+    ./htpc.nix
     ./thermal.nix
   ];
   hardware.nvidia = {
