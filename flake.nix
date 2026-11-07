@@ -37,6 +37,9 @@
     quickgui.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    # Index 01 ring webhook receiver; provides nixosModules.default (services.pebble-ring)
+    pebble-ring.url = "git+https://workhorse.comet-court.ts.net:8445/sangmin/pebble-ring";
+    pebble-ring.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
     {
