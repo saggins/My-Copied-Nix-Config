@@ -52,16 +52,16 @@ in
         };
         font = {
           normal = {
-            family = "FiraCode Nerd Font Mono";
+            family = "OpenDyslexicM Nerd Font Mono";
           };
           bold = {
-            family = "FiraCode Nerd Font Mono";
+            family = "OpenDyslexicM Nerd Font Mono";
           };
           italic = {
-            family = "FiraCode Nerd Font Mono";
+            family = "OpenDyslexicM Nerd Font Mono";
           };
           bold_italic = {
-            family = "FiraCode Nerd Font Mono";
+            family = "OpenDyslexicM Nerd Font Mono";
           };
           size = 16;
           builtin_box_drawing = true;
