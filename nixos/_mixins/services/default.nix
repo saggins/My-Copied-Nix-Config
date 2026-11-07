@@ -13,5 +13,6 @@
     ./suwayomi
     ./sjsufood
     ./gate
+    ./authentik
   ];
 }
