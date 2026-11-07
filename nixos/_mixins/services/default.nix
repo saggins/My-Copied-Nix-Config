@@ -12,5 +12,6 @@
     ./garage
     ./suwayomi
     ./sjsufood
+    ./gate
   ];
 }
