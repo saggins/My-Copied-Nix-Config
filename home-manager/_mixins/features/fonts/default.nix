@@ -16,6 +16,8 @@ lib.mkIf (isDarwin || isOtherOS) {
       with pkgs;
       [
         nerd-fonts.fira-code
+        nerd-fonts.open-dyslexic
+        open-dyslexic
         nerd-fonts.symbols-only
         corefonts
         fira
@@ -52,15 +54,18 @@ lib.mkIf (isDarwin || isOtherOS) {
     enable = true;
     defaultFonts = {
       serif = [
+        "OpenDyslexic"
         "Source Serif"
         "Noto Color Emoji"
       ];
       sansSerif = [
+        "OpenDyslexic"
         "Work Sans"
         "Fira Sans"
         "Noto Color Emoji"
       ];
       monospace = [
+        "OpenDyslexicM Nerd Font Mono"
         "FiraCode Nerd Font Mono"
         "Font Awesome 6 Free"
         "Font Awesome 6 Brands"

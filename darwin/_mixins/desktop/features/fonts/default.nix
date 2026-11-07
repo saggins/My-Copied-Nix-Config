@@ -3,6 +3,8 @@
   fonts = {
     packages = with pkgs; [
       nerd-fonts.fira-code
+      nerd-fonts.open-dyslexic
+      open-dyslexic
       nerd-fonts.symbols-only
       corefonts
       fira
