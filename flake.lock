@@ -1073,6 +1073,26 @@
         "type": "github"
       }
     },
+    "pebble-ring": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794085683,
+        "narHash": "sha256-/gWN6ZTlP0llwiMUSJY9dLF+46Azv8EpjHzHmXFRQYI=",
+        "owner": "saggins",
+        "repo": "Pebble-rs-stuff",
+        "rev": "404845ca7c245d0aed4a6b3513f9b307e9b24663",
+        "type": "github"
+      },
+      "original": {
+        "owner": "saggins",
+        "repo": "Pebble-rs-stuff",
+        "type": "github"
+      }
+    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -1176,6 +1196,7 @@
         "nixos-needsreboot": "nixos-needsreboot",
         "nixpkgs": "nixpkgs_7",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "pebble-ring": "pebble-ring",
         "quickemu": "quickemu",
         "quickgui": "quickgui",
         "sops-nix": "sops-nix"
