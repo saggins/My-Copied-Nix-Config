@@ -30,10 +30,6 @@ let
   # On the NAS share from nixos/workhorse/backup.nix
   backupDir = "/mnt/workhorse-backup/postgresql";
 
-  # DUMMY secrets for bringing the service up; they end up in the world-readable store.
-  # Replace with the sops secret below before relying on this instance.
-  dummyEnv = "authentik/dummy.env";
-
   # Upstream's blueprints plus ours under nix/. Copied rather than symlinked: Python's
   # recursive glob doesn't follow symlinked directories. Directories are made fresh and
   # only files copied, since the sandbox refuses chmod on the copied store dirs.
@@ -48,8 +44,7 @@ in
 lib.mkIf (lib.elem hostname installOn) {
   services.authentik = {
     enable = true;
-    # TODO: switch to config.sops.secrets.authentik-env.path
-    environmentFile = "/etc/${dummyEnv}";
+    environmentFile = config.sops.secrets.authentik-env.path;
     settings = {
       blueprints_dir = "${blueprints}";
       # Since 2026.8 each listener is a list of addresses
@@ -68,27 +63,19 @@ lib.mkIf (lib.elem hostname installOn) {
     };
   };
 
-  # AUTHENTIK_BOOTSTRAP_PASSWORD only takes effect when akadmin is first created
-  environment.etc.${dummyEnv} = {
+  # Dotenv file with AUTHENTIK_SECRET_KEY, AUTHENTIK_BOOTSTRAP_PASSWORD (only takes effect
+  # when akadmin is first created) and GITEA_OIDC_CLIENT_SECRET
+  sops.secrets.authentik-env = {
     mode = "0400";
-    text = ''
-      AUTHENTIK_SECRET_KEY=dummy-not-secret-replace-me-with-openssl-rand-base64-60
-      AUTHENTIK_BOOTSTRAP_PASSWORD=dummy-not-secret-replace-me
-      GITEA_OIDC_CLIENT_SECRET=dummy-gitea-oidc-secret-replace-me
-    '';
+    owner = "root";
+    group = "root";
+    sopsFile = ../../../../secrets/workhorse.yaml;
+    restartUnits = [
+      "authentik.service"
+      "authentik-worker.service"
+      "authentik-migrate.service"
+    ];
   };
-
-  # sops.secrets.authentik-env = {
-  #   mode = "0400";
-  #   owner = "root";
-  #   group = "root";
-  #   sopsFile = ../../../../secrets/workhorse.yaml;
-  #   restartUnits = [
-  #     "authentik.service"
-  #     "authentik-worker.service"
-  #     "authentik-migrate.service"
-  #   ];
-  # };
 
   services.postgresqlBackup = {
     enable = true;

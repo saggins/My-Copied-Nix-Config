@@ -25,9 +25,8 @@ let
   discoveryUrl = "https://${domain}:8444/application/o/gitea/.well-known/openid-configuration";
   backupDir = "/mnt/workhorse-backup/gitea";
 
-  # DUMMY secret, world-readable in the store; must match GITEA_OIDC_CLIENT_SECRET in the
-  # authentik env file. Replace with a sops secret.
-  oidcSecretFile = "/etc/gitea/oidc-secret";
+  # Must match GITEA_OIDC_CLIENT_SECRET in the authentik env file
+  oidcSecretFile = config.sops.secrets.gitea-oidc-secret.path;
 
   giteaEnv = {
     USER = cfg.user;
@@ -73,11 +72,12 @@ lib.mkIf (lib.elem hostname installOn) {
     };
   };
 
-  environment.etc."gitea/oidc-secret" = {
-    user = cfg.user;
+  sops.secrets.gitea-oidc-secret = {
+    owner = cfg.user;
     group = cfg.group;
     mode = "0400";
-    text = "dummy-gitea-oidc-secret-replace-me";
+    sopsFile = ../../../../secrets/workhorse.yaml;
+    restartUnits = [ "gitea-authentik-sso.service" ];
   };
 
   # Create or update the Authentik login source from config; reruns whenever this
