@@ -84,9 +84,18 @@ lib.mkIf (lib.elem hostname installOn) {
   # script changes
   systemd.services.gitea-authentik-sso = {
     description = "Configure Gitea's Authentik login source";
-    after = [ "gitea.service" ];
+    # Gitea fetches Authentik's discovery URL when the source is saved, and Authentik
+    # answers 503 until it has finished starting (e.g. both restart on a secret change),
+    # so wait for it and retry.
+    after = [
+      "gitea.service"
+      "authentik.service"
+    ];
     requires = [ "gitea.service" ];
+    wants = [ "authentik.service" ];
     wantedBy = [ "multi-user.target" ];
+    startLimitIntervalSec = 600;
+    startLimitBurst = 20;
     path = [
       cfg.package
       pkgs.gawk
@@ -95,6 +104,8 @@ lib.mkIf (lib.elem hostname installOn) {
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
+      Restart = "on-failure";
+      RestartSec = 15;
       User = cfg.user;
       Group = cfg.group;
     };
