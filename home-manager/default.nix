@@ -51,6 +51,7 @@ in
     fzf.enable = config.programs.fzf.enable;
     micro.enable = config.programs.micro.enable;
     starship.enable = config.programs.starship.enable;
+    tmux.enable = config.programs.tmux.enable;
     yazi.enable = config.programs.yazi.enable;
   };
 
@@ -710,6 +711,24 @@ in
           success_symbol = "[](fg:blue) ";
         };
       };
+    };
+    tmux = {
+      enable = true;
+      baseIndex = 1;
+      clock24 = true;
+      escapeTime = 0;
+      historyLimit = 50000;
+      keyMode = "vi";
+      mouse = true;
+      terminal = "tmux-256color";
+      extraConfig = ''
+        # Vim-style selection in copy mode
+        bind-key -T copy-mode-vi v send-keys -X begin-selection
+        bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
+        bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+        # Yank to the local clipboard via OSC 52, also over SSH
+        set -g set-clipboard on
+      '';
     };
     yazi = {
       enable = true;
