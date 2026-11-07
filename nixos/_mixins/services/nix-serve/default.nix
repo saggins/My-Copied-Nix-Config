@@ -28,6 +28,11 @@ lib.mkIf (builtins.elem hostname installOn) {
     };
   };
 
+  # nginx owns :80 for the cache, so keep Caddy's HTTP->HTTPS redirect listener off it
+  services.caddy.globalConfig = lib.mkIf config.services.caddy.enable ''
+    auto_https disable_redirects
+  '';
+
   # Only reachable over the tailnet
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 80 ];
 

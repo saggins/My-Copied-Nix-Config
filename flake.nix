@@ -14,6 +14,9 @@
     # Intentionally NOT following nixpkgs so the hyprland.cachix.org binaries match.
     hyprland.url = "github:hyprwm/Hyprland/v0.56.1"; # v0.56.2 flake fails to build (glaze);
 
+    # Intentionally NOT following nixpkgs: upstream warns its python deps break on other
+    # pins, and its own pin keeps nix-community.cachix.org hits.
+    authentik-nix.url = "github:nix-community/authentik-nix";
     bzmenu.url = "https://github.com/e-tho/bzmenu/archive/refs/tags/v0.2.1.tar.gz";
     bzmenu.inputs.nixpkgs.follows = "nixpkgs";
     iwmenu.url = "https://github.com/e-tho/iwmenu/archive/refs/tags/v0.2.0.tar.gz";

@@ -1,0 +1,24 @@
+# Personal admin account. Passwords and MFA devices are not declarative; they come back
+# from the database dump, or get set again after logging in as akadmin (bootstrap
+# password from the env file).
+version: 1
+metadata:
+  name: nix - admin
+entries:
+  # Same group the bootstrap blueprint creates; declared here too so this file doesn't
+  # depend on blueprint ordering on a fresh install
+  - model: authentik_core.group
+    state: created
+    id: admins
+    identifiers:
+      name: authentik Admins
+    attrs:
+      is_superuser: true
+  - model: authentik_core.user
+    state: present
+    identifiers:
+      username: sangmin
+    attrs:
+      name: Sangmin Chun
+      groups:
+        - !KeyOf admins

@@ -109,6 +109,22 @@ let
     ]
   );
 
+  # Steam's gameoverlayrenderer.so segfaults in its constructor inside
+  # Chromium's zygote (Electron in VacuumTube, QtWebEngine in Plex HTPC),
+  # taking the app down. gamescope draws the overlay itself, so drop the preload.
+  withoutSteamOverlay =
+    pkg: exe:
+    pkgs.symlinkJoin {
+      name = "${pkg.pname}-no-overlay";
+      paths = [ pkg ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/${exe} --unset LD_PRELOAD
+      '';
+    };
+  vacuum-tube = withoutSteamOverlay pkgs.unstable.vacuum-tube "VacuumTube";
+  plex-htpc = withoutSteamOverlay pkgs.plex-htpc "plex-htpc";
+
   steamosHelpers = [
     steamos-session-select
     steamos-update
@@ -120,6 +136,13 @@ in
   imports = [ ../_mixins/desktop/apps/steam ];
 
   programs.steam = {
+    # Steam preloads gameoverlayrenderer.so into non-Steam shortcuts even with
+    # the overlay off, and it needs libGL.so.1. Nix binaries (VacuumTube, Kodi)
+    # don't search the FHS lib dirs, so they die before starting. Steam hands
+    # its startup LD_LIBRARY_PATH to launched games, so seed it with libglvnd.
+    package = pkgs.steam.override {
+      extraEnv.LD_LIBRARY_PATH = "${pkgs.libglvnd}/lib";
+    };
     extraPackages = steamosHelpers;
     gamescopeSession = {
       enable = true;
@@ -205,7 +228,9 @@ in
   environment.systemPackages = steamosHelpers ++ [
     returnToGamingMode
     # YouTube's TV UI; add it to Steam as a non-Steam game from desktop mode.
-    pkgs.unstable.vacuum-tube
+    vacuum-tube
     kodi
+    # Plex's big-screen UI; add it to Steam the same way.
+    plex-htpc
   ];
 }

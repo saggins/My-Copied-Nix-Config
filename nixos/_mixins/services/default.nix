@@ -12,5 +12,8 @@
     ./garage
     ./suwayomi
     ./sjsufood
+    ./gate
+    ./authentik
+    ./gitea
   ];
 }
