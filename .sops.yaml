@@ -42,4 +42,5 @@ creation_rules:
     - age:
         - *admin_bastion
         - *user_dorado
+        - *user_workhorse
         - *user_bastion
