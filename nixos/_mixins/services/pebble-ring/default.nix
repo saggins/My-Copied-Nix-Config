@@ -1,5 +1,6 @@
 # pebble-ring: webhook receiver for the Index 01 ring (whisper.cpp + LLM classify + actions).
-# Runs in a NixOS container on workhorse; source and module live in the pebble-ring flake.
+# Runs in a NixOS container on workhorse. Source is the pebble-ring-src flake input; the
+# package (pkgs/pebble-ring) and module (modules/nixos/pebble-ring) are vendored here.
 #
 # - Shares the host network (privateNetwork = false), so it reaches the tailnet services it
 #   calls (Ollama on the host, Home Assistant, Gitea) and binds 127.0.0.1:${port} on the host.
@@ -12,8 +13,8 @@
 {
   config,
   hostname,
-  inputs,
   lib,
+  outputs,
   pkgs,
   stateVersion,
   tailNet,
@@ -53,7 +54,10 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
     );
 
     config = {
-      imports = [ inputs.pebble-ring.nixosModules.default ];
+      imports = [ outputs.nixosModules.pebble-ring ];
+      # Reuse the host's pkgs (with this flake's overlays): provides pkgs.pebble-ring and
+      # keeps the container's closure on the same nixpkgs the host is built and scanned with.
+      nixpkgs.pkgs = pkgs;
       system.stateVersion = stateVersion;
 
       services.pebble-ring = {

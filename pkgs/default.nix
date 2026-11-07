@@ -1,6 +1,9 @@
 # Custom packages, that can be defined similarly to ones from nixpkgs
 # You can build them using 'nix build .#example'
-pkgs: {
+pkgs: inputs: {
+  # Built from a non-flake source input, so flake.lock updates bump it
+  pebble-ring = pkgs.callPackage ./pebble-ring { src = inputs.pebble-ring-src; };
+
   # Local packages being prepped for upstreaming
   cider = pkgs.callPackage ./cider { };
   davinci-resolve = pkgs.callPackage ./davinci-resolve { };

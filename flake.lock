@@ -1073,12 +1073,8 @@
         "type": "github"
       }
     },
-    "pebble-ring": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
+    "pebble-ring-src": {
+      "flake": false,
       "locked": {
         "lastModified": 1794085683,
         "narHash": "sha256-/gWN6ZTlP0llwiMUSJY9dLF+46Azv8EpjHzHmXFRQYI=",
@@ -1196,7 +1192,7 @@
         "nixos-needsreboot": "nixos-needsreboot",
         "nixpkgs": "nixpkgs_7",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "pebble-ring": "pebble-ring",
+        "pebble-ring-src": "pebble-ring-src",
         "quickemu": "quickemu",
         "quickgui": "quickgui",
         "sops-nix": "sops-nix"
