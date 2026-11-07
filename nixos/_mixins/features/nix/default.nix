@@ -1,13 +1,15 @@
 { ... }:
 {
-  # Prebuilt binaries for the pinned Hyprland flake (avoids source builds),
-  # and workhorse's CI builds served over Tailscale (see services/nix-serve).
+  # Prebuilt binaries for the pinned Hyprland and authentik-nix flakes (avoids source
+  # builds), and workhorse's CI builds served over Tailscale (see services/nix-serve).
   nix.settings.extra-substituters = [
     "https://hyprland.cachix.org"
+    "https://nix-community.cachix.org"
     "http://workhorse.comet-court.ts.net"
   ];
   nix.settings.extra-trusted-public-keys = [
     "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     "workhorse.comet-court.ts.net-1:Ykw9ZyxGeY0E7Wl3DcI5SQCvK7pnBNz8YJVIG/m2Pgg="
   ];
   # Don't stall builds when workhorse is offline; Nix moves on to the next cache.

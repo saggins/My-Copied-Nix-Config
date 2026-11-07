@@ -9,6 +9,7 @@
 {
   imports = [
     inputs.nixos-hardware.nixosModules.dell-precision-7520
+    ./backup.nix
     ./disks.nix
     ./htpc.nix
     ./thermal.nix
