@@ -14,5 +14,6 @@
     ./sjsufood
     ./gate
     ./authentik
+    ./gitea
   ];
 }
