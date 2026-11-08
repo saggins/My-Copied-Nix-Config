@@ -2,4 +2,5 @@
 # - https://wiki.nixos.org/wiki/NixOS_modules
 {
   # my-module = import ./my-module.nix;
+  pebble-ring = import ./pebble-ring;
 }

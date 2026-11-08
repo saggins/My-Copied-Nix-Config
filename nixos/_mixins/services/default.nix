@@ -12,6 +12,7 @@
     ./garage
     ./suwayomi
     ./sjsufood
+    ./pebble-ring
     ./gate
     ./authentik
     ./gitea

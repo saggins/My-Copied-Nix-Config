@@ -40,6 +40,11 @@
     quickgui.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    # Index 01 ring webhook receiver. Source only: the package (pkgs/pebble-ring) and module
+    # (modules/nixos/pebble-ring) are vendored here so they build against this flake's
+    # nixpkgs and get vuln scanned; the lock updater bumps the source.
+    pebble-ring-src.url = "github:saggins/Pebble-rs-stuff";
+    pebble-ring-src.flake = false;
   };
   outputs =
     {
@@ -169,7 +174,7 @@
           # Import the function from pkgs/default.nix
           pkgsFunction = import ./pkgs;
           # Call the function with the fully overlaid package set
-          customPkgs = pkgsFunction pkgsWithOverlays;
+          customPkgs = pkgsFunction pkgsWithOverlays inputs;
         in
         # Return the set of custom packages
         customPkgs
