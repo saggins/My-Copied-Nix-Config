@@ -35,6 +35,10 @@ Use `nh` whenever possible instead of raw `nixos-rebuild` / `darwin-rebuild` /
 - Home Manager: `nh home build ~/Zero/nix-config` / `nh home switch ~/Zero/nix-config`
 - nix-darwin: `nh darwin build ~/Zero/nix-config` / `nh darwin switch ~/Zero/nix-config`
 
+Don't run builds or switches yourself. Ask the user to run the exact command with the
+`!` prefix (e.g. `! nh home switch ~/Zero/nix-config`), so they see nh's live
+nix-output-monitor progress, then check the result from its output.
+
 Wrapper scripts exist: `nh-host`, `nh-all` (NixOS), `nh-home` (HM). Fall back to
 `nix build .#<attr>` only for things `nh` can't do (ISOs, single packages from `pkgs/`,
 evaluating one option). Format with `nix fmt` (nixfmt).
