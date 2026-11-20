@@ -17,6 +17,10 @@
     # Intentionally NOT following nixpkgs: upstream warns its python deps break on other
     # pins, and its own pin keeps nix-community.cachix.org hits.
     authentik-nix.url = "github:nix-community/authentik-nix";
+    # Same reason: uv2nix-built python env pinned to upstream's nixpkgs. Its home-manager
+    # input is only used by upstream checks, so point it at ours to skip the extra fetch.
+    hermes-agent.url = "github:NousResearch/hermes-agent";
+    hermes-agent.inputs.home-manager.follows = "home-manager";
     bzmenu.url = "https://github.com/e-tho/bzmenu/archive/refs/tags/v0.2.1.tar.gz";
     bzmenu.inputs.nixpkgs.follows = "nixpkgs";
     iwmenu.url = "https://github.com/e-tho/iwmenu/archive/refs/tags/v0.2.0.tar.gz";

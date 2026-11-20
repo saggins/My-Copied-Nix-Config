@@ -16,6 +16,7 @@ in
 {
   imports = [
     ./graphics-production
+    ./hermes-agent
     ./signal-desktop
     ./ulauncher
     ./vaults
