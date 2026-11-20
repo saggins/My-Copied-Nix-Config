@@ -41,11 +41,17 @@ in
     workspaces = [ ];
   };
 
-  blackchungus = {
-    monitors = [
-      (mon "DP-3" "1920x1080@144Hz" "0x0" 1) # ASUS MG248
-      (mon "HDMI-A-1" "1920x1080@60Hz" "1920x0" 1) # Acer S271HL
-    ];
-    workspaces = defaultWorkspaces "DP-3";
-  };
+  # Matched by EDID description so the layout survives port changes.
+  blackchungus =
+    let
+      asus = "desc:Ancor Communications Inc MG248 G7LMQS092948";
+      acer = "desc:Acer Technologies S271HL LUWAA005853B";
+    in
+    {
+      monitors = [
+        (mon asus "1920x1080@144Hz" "0x0" 1)
+        (mon acer "1920x1080@60Hz" "1920x0" 1)
+      ];
+      workspaces = defaultWorkspaces asus;
+    };
 }
