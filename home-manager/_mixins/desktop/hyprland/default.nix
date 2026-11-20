@@ -12,6 +12,9 @@ let
   layout = hostMonitors.${hostname} or hostMonitors.default;
   toLua = lib.generators.toLua { multiline = false; };
 
+  # Pointer sensitivity (-1.0 .. 1.0); tune live with `hypr-mouse-sens`.
+  mouseSensitivity = { blackchungus = "-0.65"; }.${hostname} or "0";
+
   hyprlock = lib.getExe pkgs.hyprlock;
   hyprshot = lib.getExe pkgs.hyprshot;
   satty = lib.getExe pkgs.satty;
@@ -144,6 +147,7 @@ in
               follow_mouse = 2,
               repeat_rate  = 30,
               repeat_delay = 300,
+              sensitivity  = ${mouseSensitivity},
               touchpad = {
                   natural_scroll = true,
               },
