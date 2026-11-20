@@ -35,6 +35,21 @@
 #     buildInputs = old.buildInputs ++ [ final.pkgs.hyprland-protocols  prev.pkgs.libei];
 #   });
 
+    # nom 2.2.0 crashes on Determinate Nix 3.23+'s new activity type 10113
+    # ("invalid activity type"). Backport the unreleased upstream fix:
+    # - https://github.com/maralorn/nix-output-monitor/issues/320
+    # - https://github.com/maralorn/nix-output-monitor/pull/321
+    # Drop once nixpkgs ships a nom release > 2.2.0.
+    nix-output-monitor = prev.nix-output-monitor.override {
+      extraComposeFunctions = [
+        (prev.haskell.lib.compose.appendPatch (prev.fetchpatch {
+          url = "https://github.com/maralorn/nix-output-monitor/compare/c40cb120262d9e9b1b988898708b124f6ffc0913...f1c3b836d24b674d1fc843dd293dfcdacb3ed2e8.diff";
+          stripLen = 1; # nixpkgs builds from the nix-output-monitor/ subdirectory
+          hash = "sha256-JPC3AXycs5oTXe9J1g7DWNBEYYr60AM78R3sajP9cgo=";
+        }))
+      ];
+    };
+
    #https://github.com/mpobaschnig/vaults/issues/164
    # Ovveride Vaults b/c it's broken 
    vaults = prev.vaults.overrideAttrs (old: rec {
