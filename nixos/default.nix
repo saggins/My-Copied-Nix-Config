@@ -21,6 +21,7 @@
     inputs.authentik-nix.nixosModules.default
     inputs.catppuccin.nixosModules.catppuccin
     inputs.determinate.nixosModules.default
+    inputs.hermes-agent.nixosModules.default
     inputs.disko.nixosModules.disko
     inputs.nix-flatpak.nixosModules.nix-flatpak
     inputs.nix-index-database.nixosModules.nix-index

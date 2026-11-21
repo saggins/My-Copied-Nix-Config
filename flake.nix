@@ -40,6 +40,9 @@
     quickgui.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    # Hermes Agent (Nous Research). Intentionally NOT following nixpkgs: it builds its python
+    # env with uv2nix against its own nixos-unstable pin.
+    hermes-agent.url = "github:NousResearch/hermes-agent";
     # Index 01 ring webhook receiver. Source only: the package (pkgs/pebble-ring) and module
     # (modules/nixos/pebble-ring) are vendored here so they build against this flake's
     # nixpkgs and get vuln scanned; the lock updater bumps the source.
