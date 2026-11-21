@@ -19,6 +19,7 @@ pkgs: inputs: {
   halloy = pkgs.callPackage ./halloy { };
   joplin-desktop = pkgs.callPackage ./joplin-desktop { };
   owncast = pkgs.unstable.callPackage ./owncast { };
+  miyo = pkgs.callPackage ./miyo { };
 
   # In my OBS Studio Configuration and in review upstream
   obs-aitum-multistream = pkgs.qt6Packages.callPackage ./obs-plugins/obs-aitum-multistream.nix { };

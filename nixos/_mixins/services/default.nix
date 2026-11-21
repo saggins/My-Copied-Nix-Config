@@ -17,5 +17,6 @@
     ./authentik
     ./gitea
     ./hermes-agent
+    ./miyo
   ];
 }

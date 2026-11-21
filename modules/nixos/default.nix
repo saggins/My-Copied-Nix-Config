@@ -3,4 +3,5 @@
 {
   # my-module = import ./my-module.nix;
   pebble-ring = import ./pebble-ring;
+  miyo = import ./miyo;
 }

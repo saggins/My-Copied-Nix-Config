@@ -8,7 +8,9 @@
 #   group so the CLI can read/write it. Log out/in after the first switch for the group.
 # - API keys: run `hermes setup` (writes $HERMES_HOME/.env), or move them to sops and set
 #   environmentFiles below.
+# - Miyo: search over the notes Miyo indexes, via its stdio MCP server (see mcpServers below).
 {
+  config,
   hostname,
   lib,
   username,
@@ -22,6 +24,16 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
     enable = true;
     addToSystemPackages = true;
     # environmentFiles = [ config.sops.secrets.hermes-env.path ];
+
+    # Miyo (services.miyo, a user service for ${username}). `miyo mcp` is stdio and forwards
+    # tool calls to the engine's local API, so it works from the hermes user without access
+    # to ~/.config/Miyo. It starts with nothing shared: after Hermes calls it once, run
+    # `miyo connections` and `miyo connections share <app> <folder>`.
+    mcpServers.miyo = lib.mkIf config.services.miyo.enable {
+      command = lib.getExe config.services.miyo.package;
+      args = [ "mcp" ];
+      env.MIYO_URL = "http://127.0.0.1:8742";
+    };
   };
 
   # sops.secrets.hermes-env = {
