@@ -15,9 +15,11 @@ Flake-based config for NixOS, nix-darwin and standalone Home Manager. Lives at
 - `darwin/` — nix-darwin entrypoint, host `dorado`.
 - `home-manager/` — Home Manager entrypoint (big `default.nix`).
 - `*/_mixins/` — shared modules, split into `configs`, `desktop`, `features`,
-  `scripts`, `services`, `users`. Each `default.nix` auto-imports every subdirectory, so
-  a new mixin is just a new dir with a `default.nix`; gate it with the flags above
-  (`lib.mkIf`, `lib.optional`). `desktop/` is only imported when `isWorkstation`.
+  `scripts`, `services`, `users`. Only `scripts/` (all three) and `nixos/_mixins/features/`
+  auto-import every subdirectory; everywhere else (`services/`, `desktop/`, other
+  `features/`) the `default.nix` has an explicit `imports` list, so a new mixin dir must
+  also be added there. `users/` imports `./${username}` if it exists. Gate mixins with the
+  flags above (`lib.mkIf`, `lib.optional`). `desktop/` is only imported when `isWorkstation`.
   - `_mixins/scripts/<name>/` — shell scripts packaged with `writeShellApplication`
     (`<name>.sh` + `default.nix`); `_template` is the starting point.
 - `pkgs/` — custom packages, exported as `packages.<system>`.
