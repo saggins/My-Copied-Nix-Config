@@ -16,5 +16,6 @@
     ./gate
     ./authentik
     ./gitea
+    ./hermes-agent
   ];
 }
