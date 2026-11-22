@@ -56,17 +56,30 @@ jobs:
       run: |
         name="${{ matrix.host }}-${{ matrix.config-type.type }}"
         nix run github:tiiuae/sbomnix#vulnxscan -- \
-          --triage \
-          --sbom "${name}.sbom.cdx.json"
-        if [ -e vulns.triage.csv ]; then
-          grep -v -E "not_vulnerable|fix_not_available|err_invalid_version|err_missing_repology_version" vulns.triage.csv > cve.csv
-          if [ $(wc -l < cve.csv) -gt 1 ]; then
-            nix run github:nixos/nixpkgs#csv2md -- --columns "0-7,9" cve.csv | tee "${name}.vulnxscan.md"
-            echo "### Vulnerability Scan Results for ${{ matrix.host }}-${{ matrix.config-type.type }}" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            cat "${name}.vulnxscan.md" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-          fi
+          --sbom "${name}.sbom.cdx.json" \
+          --out vulns.csv
+        # sbomnix 2.x dropped --triage and vulns.triage.csv; render the
+        # report columns ourselves, dropping whitelisted rows
+        nix run github:nixos/nixpkgs#python3 -- -c '
+          import csv, sys
+          rows = list(csv.reader(open("vulns.csv")))
+          head, data = rows[0], rows[1:]
+          head = [n.replace("version_local", "version") for n in head]
+          want = ["vuln_id", "url", "package", "version", "severity", "grype", "osv", "vulnix", "sum"]
+          wl = head.index("whitelist") if "whitelist" in head else -1
+          sel = [head.index(n) for n in want if n in head]
+          w = csv.writer(sys.stdout)
+          w.writerow([head[i] for i in sel])
+          for row in data:
+            if wl == -1 or row[wl] != "True":
+              w.writerow([row[i] for i in sel])
+        ' > cve.csv
+        if [ $(wc -l < cve.csv) -gt 1 ]; then
+          nix run github:nixos/nixpkgs#csv2md -- cve.csv | tee "${name}.vulnxscan.md"
+          echo "### Vulnerability Scan Results for ${{ matrix.host }}-${{ matrix.config-type.type }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat "${name}.vulnxscan.md" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
         fi
     - name: Upload vulnxscan report
       uses: actions/upload-artifact@v7
