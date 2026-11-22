@@ -64,27 +64,30 @@ jobs:
             --sbom "${name}.sbom.cdx.json" \
             --out vulns.csv
           # sbomnix 2.x dropped --triage and vulns.triage.csv; render the
-          # report columns ourselves, dropping whitelisted rows
-          nix run github:nixos/nixpkgs#python3 -- -c '
-            import csv, sys
-            rows = list(csv.reader(open("vulns.csv")))
-            head, data = rows[0], rows[1:]
-            head = [n.replace("version_local", "version") for n in head]
-            want = ["vuln_id", "url", "package", "version", "severity", "grype", "osv", "vulnix", "sum"]
-            wl = head.index("whitelist") if "whitelist" in head else -1
-            sel = [head.index(n) for n in want if n in head]
-            w = csv.writer(sys.stdout)
-            w.writerow([head[i] for i in sel])
-            for row in data:
-              if wl == -1 or row[wl] != "True":
-                w.writerow([row[i] for i in sel])
-          ' > cve.csv
-          if [ $(wc -l < cve.csv) -gt 1 ]; then
-            nix run github:nixos/nixpkgs#csv2md -- cve.csv | tee "${name}.vulnxscan.md"
-            echo "### Vulnerability Scan Results for ${{ matrix.package }}" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            cat "${name}.vulnxscan.md" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
+          # report columns ourselves, dropping whitelisted rows. Note: the
+          # csv is not written at all when zero findings.
+          if [ -e vulns.csv ]; then
+            nix run github:nixos/nixpkgs#python3 -- -c '
+              import csv, sys
+              rows = list(csv.reader(open("vulns.csv")))
+              head, data = rows[0], rows[1:]
+              head = [n.replace("version_local", "version") for n in head]
+              want = ["vuln_id", "url", "package", "version", "severity", "grype", "osv", "vulnix", "sum"]
+              wl = head.index("whitelist") if "whitelist" in head else -1
+              sel = [head.index(n) for n in want if n in head]
+              w = csv.writer(sys.stdout)
+              w.writerow([head[i] for i in sel])
+              for row in data:
+                if wl == -1 or row[wl] != "True":
+                  w.writerow([row[i] for i in sel])
+            ' > cve.csv
+            if [ $(wc -l < cve.csv) -gt 1 ]; then
+              nix run github:nixos/nixpkgs#csv2md -- cve.csv | tee "${name}.vulnxscan.md"
+              echo "### Vulnerability Scan Results for ${{ matrix.package }}" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              cat "${name}.vulnxscan.md" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
           fi
       - name: Upload vulnxscan report
         uses: actions/upload-artifact@v7
@@ -139,27 +142,30 @@ jobs:
             --sbom "${name}.sbom.cdx.json" \
             --out vulns.csv
           # sbomnix 2.x dropped --triage and vulns.triage.csv; render the
-          # report columns ourselves, dropping whitelisted rows
-          nix run github:nixos/nixpkgs#python3 -- -c '
-            import csv, sys
-            rows = list(csv.reader(open("vulns.csv")))
-            head, data = rows[0], rows[1:]
-            head = [n.replace("version_local", "version") for n in head]
-            want = ["vuln_id", "url", "package", "version", "severity", "grype", "osv", "vulnix", "sum"]
-            wl = head.index("whitelist") if "whitelist" in head else -1
-            sel = [head.index(n) for n in want if n in head]
-            w = csv.writer(sys.stdout)
-            w.writerow([head[i] for i in sel])
-            for row in data:
-              if wl == -1 or row[wl] != "True":
-                w.writerow([row[i] for i in sel])
-          ' > cve.csv
-          if [ $(wc -l < cve.csv) -gt 1 ]; then
-            nix run github:nixos/nixpkgs#csv2md -- cve.csv | tee "${name}.vulnxscan.md"
-            echo "### Vulnerability Scan Results for ${{ matrix.package }}" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            cat "${name}.vulnxscan.md" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
+          # report columns ourselves, dropping whitelisted rows. Note: the
+          # csv is not written at all when zero findings.
+          if [ -e vulns.csv ]; then
+            nix run github:nixos/nixpkgs#python3 -- -c '
+              import csv, sys
+              rows = list(csv.reader(open("vulns.csv")))
+              head, data = rows[0], rows[1:]
+              head = [n.replace("version_local", "version") for n in head]
+              want = ["vuln_id", "url", "package", "version", "severity", "grype", "osv", "vulnix", "sum"]
+              wl = head.index("whitelist") if "whitelist" in head else -1
+              sel = [head.index(n) for n in want if n in head]
+              w = csv.writer(sys.stdout)
+              w.writerow([head[i] for i in sel])
+              for row in data:
+                if wl == -1 or row[wl] != "True":
+                  w.writerow([row[i] for i in sel])
+            ' > cve.csv
+            if [ $(wc -l < cve.csv) -gt 1 ]; then
+              nix run github:nixos/nixpkgs#csv2md -- cve.csv | tee "${name}.vulnxscan.md"
+              echo "### Vulnerability Scan Results for ${{ matrix.package }}" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              cat "${name}.vulnxscan.md" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
           fi
       - name: Upload vulnxscan report
         uses: actions/upload-artifact@v7
