@@ -14,7 +14,8 @@
   ...
 }:
 let
-  installOn = [ "bastion" ];
+  # Disabled until secrets/bastion/gate.yaml exists
+  installOn = [ ];
   port = 25565;
 
   sopsFile = ../../../../secrets/bastion/gate.yaml;
