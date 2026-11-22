@@ -18,5 +18,6 @@
     ./gitea
     ./hermes-agent
     ./miyo
+    ./vrising
   ];
 }
