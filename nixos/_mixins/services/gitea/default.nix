@@ -1,8 +1,11 @@
 # Gitea for Obsidian notes (obsidian-git over HTTPS), tailnet-only at
 # https://workhorse.<tailNet>:8445 behind Caddy with the Tailscale cert. Sign-in is via
 # Authentik (blueprints/gitea.yaml in the authentik mixin); members of "authentik Admins"
-# become Gitea admins. Git over SSH is off: Obsidian mobile only speaks HTTPS, so clients
-# push with a Gitea access token.
+# become Gitea admins. Obsidian mobile only speaks HTTPS, so it pushes with a Gitea access
+# token. Git over SSH goes through the system sshd as gitea@workhorse.<tailNet>:<repo>
+# (Gitea's default setup): Gitea writes the keys users add in the web UI to
+# ~gitea/.ssh/authorized_keys, each forced to `gitea serv`. Port 22 is also open on the
+# LAN, so sshd ignores those keys unless the client is on the tailnet.
 #
 # Recovery: the nightly `gitea dump` on the NAS holds the database, repositories and
 # custom/ (including Gitea's generated secret keys). The Authentik login source is
@@ -45,7 +48,7 @@ lib.mkIf (lib.elem hostname installOn) {
         ROOT_URL = rootUrl;
         HTTP_ADDR = "127.0.0.1";
         HTTP_PORT = httpPort;
-        DISABLE_SSH = true;
+        DISABLE_SSH = false; # uses the system sshd on port 22
       };
       # Accounts only come from Authentik
       service = {
@@ -151,6 +154,12 @@ lib.mkIf (lib.elem hostname installOn) {
       ExecStartPost = "${pkgs.findutils}/bin/find ${backupDir} -name 'gitea-dump-*' -mtime +14 -delete";
     };
   };
+
+  # Keep Git over SSH tailnet-only: from anywhere else the gitea user has no keys
+  services.openssh.extraConfig = ''
+    Match User ${cfg.user} Address *,!100.64.0.0/10,!fd7a:115c:a1e0::/48
+      AuthorizedKeysFile none
+  '';
 
   # tailscale0 is a trusted interface, so publicPort is reachable on the tailnet only
   services.caddy = lib.mkIf config.services.tailscale.enable {
