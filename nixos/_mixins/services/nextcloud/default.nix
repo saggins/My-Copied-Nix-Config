@@ -13,8 +13,14 @@
 # and FamilyShare/nextcloud must exist and be owned by 980:977. Root (tmpfiles)
 # then also writes as nextcloud, and nextcloud-setup's ownership check passes.
 #
-# Requires the sops key `nextcloud-admin-pass` in secrets/workhorse.yaml before
-# switching, or nextcloud-setup and sops fail. Never write that file yourself:
+# Sign-in: "Log in with Authentik" via the user_oidc app (blueprints/nextcloud.yaml in
+# the authentik mixin). Accounts are created on first login and named after the
+# Authentik username; members of "authentik Admins" (akadmin) land in Nextcloud's
+# admin group. The local nextcloud-admin stays as a break-glass login.
+#
+# Requires the sops keys `nextcloud-admin-pass` and `nextcloud-oidc-secret` in
+# secrets/workhorse.yaml (the latter also as NEXTCLOUD_OIDC_CLIENT_SECRET in
+# authentik-env) before switching, or nextcloud-setup and sops fail. Never write that file yourself:
 # the user edits secrets/ directly.
 {
   config,
@@ -35,6 +41,9 @@ let
   uid = 980;
   gid = 977;
   nfsDevice = "cheesecake.${tailNet}:/mnt/user/FamilyShare/nextcloud";
+  discoveryUrl = "https://${domain}:8444/application/o/nextcloud/.well-known/openid-configuration";
+  # Must match NEXTCLOUD_OIDC_CLIENT_SECRET in the authentik env file
+  oidcSecretFile = config.sops.secrets.nextcloud-oidc-secret.path;
   datadir = "/mnt/nextcloud";
 in
 lib.mkIf (lib.elem hostname installOn) {
@@ -48,6 +57,8 @@ lib.mkIf (lib.elem hostname installOn) {
     maxUploadSize = "16G";
     https = false; # Caddy terminates TLS
     database.createLocally = true;
+    extraApps = { inherit (cfg.package.packages.apps) user_oidc; };
+    extraAppsEnable = true;
     config = {
       # Must be set explicitly (module assertion); db password is auto-managed
       dbtype = "pgsql";
@@ -61,6 +72,9 @@ lib.mkIf (lib.elem hostname installOn) {
       trusted_domains = [ domain ];
       trusted_proxies = [ "127.0.0.1" ];
       maintenance_window_start = 1;
+      # Authentik is reached on a tailnet (100.64.0.0/10) address, which Nextcloud's
+      # HTTP client refuses as "local" otherwise
+      allow_local_remote_servers = true;
     };
   };
 
@@ -91,7 +105,45 @@ lib.mkIf (lib.elem hostname installOn) {
       ]
       (_: {
         unitConfig.RequiresMountsFor = datadir;
-      });
+      })
+    // {
+      # Create or update the Authentik provider in user_oidc from config; reruns
+      # whenever this script changes. Retries while Authentik is still starting.
+      nextcloud-authentik-sso = {
+        description = "Configure Nextcloud's Authentik login";
+        after = [
+          "nextcloud-setup.service"
+          "authentik.service"
+        ];
+        requires = [ "nextcloud-setup.service" ];
+        wants = [ "authentik.service" ];
+        wantedBy = [ "multi-user.target" ];
+        startLimitIntervalSec = 600;
+        startLimitBurst = 20;
+        unitConfig.RequiresMountsFor = datadir;
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          Restart = "on-failure";
+          RestartSec = 15;
+          User = "nextcloud";
+          Group = "nextcloud";
+        };
+        script = ''
+          ${lib.getExe cfg.occ} user_oidc:provider authentik \
+            --clientid=nextcloud \
+            --clientsecret-file=${oidcSecretFile} \
+            --discoveryuri=${discoveryUrl} \
+            --scope="openid email profile nextcloud" \
+            --unique-uid=0 \
+            --mapping-uid=preferred_username \
+            --mapping-display-name=name \
+            --mapping-email=email \
+            --group-provisioning=1 \
+            --mapping-groups=nextcloud_groups
+        '';
+      };
+    };
 
   # The module's nginx vhost defaults to :80, where nix-serve's vhost lives; pin
   # Nextcloud's to a loopback port for Caddy. It's the only vhost on that port, so
@@ -109,6 +161,14 @@ lib.mkIf (lib.elem hostname installOn) {
     mode = "0400";
     sopsFile = ../../../../secrets/workhorse.yaml;
     restartUnits = [ "nextcloud-setup.service" ];
+  };
+
+  sops.secrets.nextcloud-oidc-secret = {
+    owner = "nextcloud";
+    group = "nextcloud";
+    mode = "0400";
+    sopsFile = ../../../../secrets/workhorse.yaml;
+    restartUnits = [ "nextcloud-authentik-sso.service" ];
   };
 
   services.caddy = lib.mkIf config.services.tailscale.enable {

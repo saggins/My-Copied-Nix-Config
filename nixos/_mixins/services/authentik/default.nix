@@ -64,7 +64,7 @@ lib.mkIf (lib.elem hostname installOn) {
   };
 
   # Dotenv file with AUTHENTIK_SECRET_KEY, AUTHENTIK_BOOTSTRAP_PASSWORD (only takes effect
-  # when akadmin is first created) and GITEA_OIDC_CLIENT_SECRET
+  # when akadmin is first created), GITEA_OIDC_CLIENT_SECRET and NEXTCLOUD_OIDC_CLIENT_SECRET
   sops.secrets.authentik-env = {
     mode = "0400";
     owner = "root";
