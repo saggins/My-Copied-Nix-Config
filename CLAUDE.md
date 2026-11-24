@@ -41,6 +41,17 @@ Wrapper scripts exist: `nh-host`, `nh-all` (NixOS), `nh-home` (HM). Fall back to
 `nix build .#<attr>` only for things `nh` can't do (ISOs, single packages from `pkgs/`,
 evaluating one option). Format with `nix fmt` (nixfmt).
 
+Run builds/switches in a detached tmux session so the user can attach to watch and type the
+sudo password. `git add` new files first (flakes ignore untracked files). Launch via a bash
+script, not an inline command (tmux runs inline commands with fish, which breaks `$?`):
+```sh
+# switch.sh: cd ~/Zero/nix-config; nh os switch ~/Zero/nix-config; echo "=== nh exit: $? ==="; exec bash
+tmux new-session -d -s nix-switch ./switch.sh   # user: tmux attach -t nix-switch
+```
+Poll with `tmux capture-pane -p -J -S -200 -t nix-switch` until `=== nh exit` or a `Password:`
+prompt; on a prompt, tell the user to attach and enter it. `nix-output-monitor error: ...
+invalid activity type: 10113` lines are harmless noise from a newer Nix.
+
 ## Secrets
 - Never write to `secrets/` (sops files) or run `sops` commands that modify them.
   The user manages secrets themselves.
