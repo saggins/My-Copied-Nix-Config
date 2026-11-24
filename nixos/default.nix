@@ -84,6 +84,8 @@
         nix-output-monitor
       ]
       ++ lib.optionals isInstall [
+        # sops shells out to it to encrypt for the age1yubikey recipient in .sops.yaml
+        age-plugin-yubikey
         inputs.determinate.packages.${platform}.default
         inputs.fh.packages.${platform}.default
         inputs.nixos-needsreboot.packages.${platform}.default
