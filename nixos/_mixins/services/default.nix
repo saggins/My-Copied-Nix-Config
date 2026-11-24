@@ -20,5 +20,6 @@
     ./hermes-agent
     ./miyo
     ./vrising
+    ./goodnotes-sync
   ];
 }
