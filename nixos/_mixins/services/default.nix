@@ -16,6 +16,7 @@
     ./gate
     ./authentik
     ./gitea
+    ./nextcloud
     ./hermes-agent
     ./miyo
     ./vrising
