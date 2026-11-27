@@ -26,6 +26,9 @@
     disko.url = "https://flakehub.com/f/nix-community/disko/1.12.0.tar.gz";
     disko.inputs.nixpkgs.follows = "nixpkgs";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    # Monado from upstream git; 25.1.0 segfaults in steamvr_lh with current SteamVR
+    # (applied as an overlay on our nixpkgs, not its prebuilt packages: glibc must match)
+    nixpkgs-xr.url = "github:nix-community/nixpkgs-xr";
     nixos-needsreboot.url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.8.tar.gz";
     nixos-needsreboot.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
