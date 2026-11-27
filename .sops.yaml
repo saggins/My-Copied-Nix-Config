@@ -44,3 +44,9 @@ creation_rules:
         - *user_dorado
         - *user_workhorse
         - *user_bastion
+  # Dev/API keys for agents and CLIs: YubiKey only (touch required to decrypt).
+  # Use: sops exec-env secrets/dev/api.yaml '<cmd>'
+  - path_regex: secrets/dev/[^/]+\.(yaml|json|env)$
+    key_groups:
+    - age:
+        - *user_dorado

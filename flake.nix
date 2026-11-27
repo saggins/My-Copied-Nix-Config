@@ -51,6 +51,7 @@
     # nixpkgs and get vuln scanned; the lock updater bumps the source.
     pebble-ring-src.url = "github:saggins/Pebble-rs-stuff";
     pebble-ring-src.flake = false;
+    pwndbg.url = "github:pwndbg/pwndbg";
   };
   outputs =
     {
