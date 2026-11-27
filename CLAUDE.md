@@ -48,6 +48,8 @@ script, not an inline command (tmux runs inline commands with fish, which breaks
 # switch.sh: cd ~/Zero/nix-config; nh os switch ~/Zero/nix-config; echo "=== nh exit: $? ==="; exec bash
 tmux new-session -d -s nix-switch ./switch.sh   # user: tmux attach -t nix-switch
 ```
+Every time you start one, immediately tell the user the exact attach command
+(e.g. `tmux attach -t nix-switch`) in your reply, before polling.
 Poll with `tmux capture-pane -p -J -S -200 -t nix-switch` until `=== nh exit` or a `Password:`
 prompt; on a prompt, tell the user to attach and enter it. `nix-output-monitor error: ...
 invalid activity type: 10113` lines are harmless noise from a newer Nix.

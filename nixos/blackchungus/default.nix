@@ -14,6 +14,7 @@
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     ./disks.nix
     ./secureboot.nix
+    ./vr.nix
   ];
 
   boot = {
@@ -77,7 +78,8 @@
     ];
 
     kernelParams = [
-      "video=DP-3:1920x1080@144"
+      # DP-3 is the Bigscreen Beyond now; forcing a mode there adds a bogus 1080p mode to it
+      #"video=DP-3:1920x1080@144"
       #"video=DP-1:3440x1440@100"
     ];
   };
