@@ -26,6 +26,8 @@
       "uas"
       "sd_mod"
     ];
+    # Load the Alder Lake iGPU in stage 1; also lets the gpu mixin detect it
+    initrd.kernelModules = [ "i915" ];
     # bcachefs is out-of-tree on the 7.3 kernel; pull its module into the
     # initrd so stage-1 can open the bcachefs root.
     extraModulePackages = [ config.boot.kernelPackages.bcachefs ];

@@ -62,7 +62,13 @@ lib.mkIf (isInstall && !isLightweight) {
     graphics = {
       enable = true;
       enable32Bit = lib.mkForce isInstall;
-      extraPackages = with pkgs; lib.optionals useIntelCurrentRuntime [ intel-compute-runtime ];
+      extraPackages =
+        with pkgs;
+        lib.optionals useIntelCurrentRuntime [ intel-compute-runtime ]
+        ++ lib.optionals hasIntelGPU [
+          intel-media-driver # VA-API (iHD) for Broadwell and newer
+          vpl-gpu-rt # QuickSync (oneVPL) for Gen12+
+        ];
     };
     nvidia = lib.mkIf hasNvidiaGPU {
       nvidiaSettings = lib.mkDefault isWorkstation;
@@ -88,6 +94,6 @@ lib.mkIf (isInstall && !isLightweight) {
 
   users.users.${username}.extraGroups = lib.optionals config.hardware.graphics.enable [
     "render"
-  	"video"
+    "video"
   ];
 }
